@@ -1,0 +1,112 @@
+'use client'
+
+import { useState } from 'react'
+import { Menu, X, MapPin } from 'lucide-react'
+
+const navLinks = [
+  { label: 'Tournaments', href: '#tournaments' },
+  { label: 'Venues', href: '#venues' },
+  { label: 'Hotels', href: '#hotels' },
+  { label: 'Team Trips', href: '#team-trips' },
+]
+
+export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  return (
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+
+          {/* Logo */}
+          <a href="/" className="flex items-center gap-2 flex-shrink-0">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: '#1a7a4a' }}
+            >
+              <MapPin size={16} color="white" strokeWidth={2.5} />
+            </div>
+            <span
+              className="text-xl font-bold tracking-tight"
+              style={{ color: '#1a7a4a' }}
+            >
+              TravelBallStay
+            </span>
+          </a>
+
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium transition-colors duration-150 hover:text-green-700"
+                style={{ color: '#4a5e6d' }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Desktop CTA buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <a
+              href="#signin"
+              className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50"
+              style={{ color: '#1a7a4a' }}
+            >
+              Sign In
+            </a>
+            <a
+              href="#signup"
+              className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90"
+              style={{ backgroundColor: '#1a7a4a' }}
+            >
+              Get Started
+            </a>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-1">
+          {navLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          <div className="pt-3 flex flex-col gap-2 border-t border-gray-100 mt-2">
+            <a
+              href="#signin"
+              className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Sign In
+            </a>
+            <a
+              href="#signup"
+              className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg text-white transition-colors"
+              style={{ backgroundColor: '#1a7a4a' }}
+            >
+              Get Started
+            </a>
+          </div>
+        </div>
+      )}
+    </nav>
+  )
+}
