@@ -2,34 +2,34 @@ import { Clock, MapPin, Users, Heart } from 'lucide-react'
 
 const benefits = [
   {
-    icon: Clock,
-    title: 'Stop searching 4 apps',
-    description:
-      'Hotels, venues, tournaments, and team coordination — all in one place instead of spread across texts, Airbnb, Google Maps, and Facebook.',
-    color: '#f59e0b',
-    bg: '#fef3c7',
-  },
-  {
-    icon: MapPin,
-    title: 'Stay near the fields',
-    description:
-      'Every search is anchored to your tournament facility, not the city center. No more 45-minute drives to morning games.',
-    color: '#1a7a4a',
-    bg: '#e6f7ee',
-  },
-  {
     icon: Users,
-    title: 'Keep your team together',
+    title: 'Stay Together',
     description:
-      'The team map shows where every family is staying. Coordinate carpools and stay close without the group text chaos.',
+      'No more splitting your team across different hotels. TravelBallStay keeps every family on the same page — and in the same area.',
     color: '#2a7fc4',
     bg: '#e4f0fb',
   },
   {
-    icon: Heart,
-    title: 'Find everything nearby',
+    icon: MapPin,
+    title: 'Stay Close to the Fields',
     description:
-      'Restaurants, grocery stores, urgent care, coffee, and batting cages — all surfaced near your tournament complex, not downtown.',
+      'Cut down on driving and stress. Every search is anchored to your tournament facility so you are never stuck with a 45-minute drive to a 6am game.',
+    color: '#1a7a4a',
+    bg: '#e6f7ee',
+  },
+  {
+    icon: Clock,
+    title: 'Save Time Planning',
+    description:
+      'No more back-and-forth coordination. One link, one page, one place where your whole team can see everything they need.',
+    color: '#f59e0b',
+    bg: '#fef3c7',
+  },
+  {
+    icon: Heart,
+    title: 'Enjoy the Weekend',
+    description:
+      'More time for memories, less time managing logistics. Let TravelBallStay handle the planning so you can focus on the game.',
     color: '#e11d48',
     bg: '#ffe4e6',
   },
@@ -41,8 +41,7 @@ export default function Benefits() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="text-center mb-12">
-          <h2 className="section-title">Built for travel sport families</h2>
-          <p className="section-subtitle">Everything you need, nothing you don&apos;t</p>
+          <h2 className="section-title">Why Families Love TravelBallStay</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
