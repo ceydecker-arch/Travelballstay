@@ -4,13 +4,55 @@ import Image from 'next/image'
 import { Search } from 'lucide-react'
 
 const sports = [
-  { icon: '⚾', label: 'Baseball' },
-  { icon: '🥎', label: 'Softball' },
-  { icon: '⚽', label: 'Soccer' },
-  { icon: '🏀', label: 'Basketball' },
-  { icon: '🏐', label: 'Volleyball' },
-  { icon: '📣', label: 'Cheer' },
-  { icon: '➕', label: 'More' },
+  {
+    icon: '⚾',
+    label: 'Baseball',
+    bg: 'rgba(26, 122, 74, 0.25)',
+    border: 'rgba(26, 122, 74, 0.5)',
+    hoverBg: 'rgba(26, 122, 74, 0.4)',
+  },
+  {
+    icon: '🥎',
+    label: 'Softball',
+    bg: 'rgba(236, 72, 153, 0.25)',
+    border: 'rgba(236, 72, 153, 0.5)',
+    hoverBg: 'rgba(236, 72, 153, 0.4)',
+  },
+  {
+    icon: '⚽',
+    label: 'Soccer',
+    bg: 'rgba(42, 127, 196, 0.25)',
+    border: 'rgba(42, 127, 196, 0.5)',
+    hoverBg: 'rgba(42, 127, 196, 0.4)',
+  },
+  {
+    icon: '🏀',
+    label: 'Basketball',
+    bg: 'rgba(249, 115, 22, 0.25)',
+    border: 'rgba(249, 115, 22, 0.5)',
+    hoverBg: 'rgba(249, 115, 22, 0.4)',
+  },
+  {
+    icon: '🏐',
+    label: 'Volleyball',
+    bg: 'rgba(147, 51, 234, 0.25)',
+    border: 'rgba(147, 51, 234, 0.5)',
+    hoverBg: 'rgba(147, 51, 234, 0.4)',
+  },
+  {
+    icon: '📣',
+    label: 'Cheer',
+    bg: 'rgba(245, 158, 11, 0.25)',
+    border: 'rgba(245, 158, 11, 0.5)',
+    hoverBg: 'rgba(245, 158, 11, 0.4)',
+  },
+  {
+    icon: '➕',
+    label: 'More Sports',
+    bg: 'rgba(255, 255, 255, 0.1)',
+    border: 'rgba(255, 255, 255, 0.3)',
+    hoverBg: 'rgba(255, 255, 255, 0.2)',
+  },
 ]
 
 export default function Hero() {
@@ -55,20 +97,35 @@ export default function Hero() {
           </p>
 
           {/* Sport pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
-            {sports.map((sport) => (
-              <span
-                key={sport.label}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border text-white"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.15)',
-                  borderColor: 'rgba(255,255,255,0.3)',
-                }}
-              >
-                <span>{sport.icon}</span>
-                {sport.label}
-              </span>
-            ))}
+          <div className="mb-10">
+            <p
+              className="text-xs font-medium tracking-wider uppercase mb-3"
+              style={{ color: 'rgba(255,255,255,0.5)' }}
+            >
+              Available for:
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {sports.map((sport, index) => (
+                <span
+                  key={sport.label}
+                  className="sport-pill inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white backdrop-blur-sm cursor-pointer transition-all duration-200 ease-out hover:scale-[1.08]"
+                  style={{
+                    backgroundColor: sport.bg,
+                    border: `1px solid ${sport.border}`,
+                    animationDelay: `${index * 75}ms`,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = sport.hoverBg
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = sport.bg
+                  }}
+                >
+                  <span className="text-base">{sport.icon}</span>
+                  {sport.label}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Search bar */}
@@ -81,7 +138,7 @@ export default function Hero() {
               />
               <input
                 type="text"
-                placeholder="Search by tournament name or city..."
+                placeholder="Search by tournament, venue, field name, or city..."
                 className="w-full pl-11 pr-4 py-4 rounded-xl border bg-white text-sm font-medium outline-none transition-all duration-150"
                 style={{
                   borderColor: '#dde8ee',
@@ -100,6 +157,7 @@ export default function Hero() {
               />
             </div>
             <button
+              type="button"
               className="flex-shrink-0 px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#1a7a4a' }}
             >
@@ -131,7 +189,7 @@ export default function Hero() {
                 e.currentTarget.style.backgroundColor = 'transparent'
               }}
             >
-              Plan a Team Trip
+              Create a Trip
             </a>
           </div>
 

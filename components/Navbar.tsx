@@ -19,18 +19,27 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 flex-shrink-0">
+          <a href="/" className="group flex items-center gap-2.5 flex-shrink-0">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: '#1a7a4a' }}
+              className="w-8 h-8 md:w-[38px] md:h-[38px] rounded-[10px] flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #1a7a4a 0%, #25a863 100%)',
+                boxShadow: '0 2px 8px rgba(26,122,74,0.4)',
+              }}
             >
-              <MapPin size={16} color="white" strokeWidth={2.5} />
+              <MapPin
+                className="w-4 h-4 md:w-5 md:h-5"
+                color="white"
+                strokeWidth={2.5}
+              />
             </div>
             <span
-              className="text-xl font-bold tracking-tight"
-              style={{ color: '#1a7a4a' }}
+              className="text-lg md:text-2xl tracking-tight"
+              style={{ fontWeight: 800 }}
             >
-              TravelBallStay
+              <span style={{ color: '#0f1f2e' }}>Travel</span>
+              <span style={{ color: '#1a7a4a' }}>Ball</span>
+              <span style={{ color: '#f59e0b' }}>Stay</span>
             </span>
           </a>
 

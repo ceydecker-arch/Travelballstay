@@ -68,3 +68,43 @@ body {
     color: #5a7080;
   }
 }
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sport-pill {
+  opacity: 0;
+  animation: fadeSlideUp 400ms ease-out forwards;
+}
+
+.quick-action-card {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out;
+}
+
+.quick-action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(15, 31, 46, 0.08);
+  border-color: #d1d5db;
+}
+
+.quick-action-card:hover .quick-action-arrow-icon {
+  transform: translateX(4px);
+}
+
+.how-it-works-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.10);
+}
+
+.how-it-works-cta:hover {
+  background-color: #15633c !important;
+  transform: translateY(-1px);
+}

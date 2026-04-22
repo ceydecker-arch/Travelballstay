@@ -1,41 +1,38 @@
 import { Search, Hotel, Map } from 'lucide-react'
-
 const steps = [
   {
     number: '01',
     icon: Search,
-    title: 'Enter your tournament',
+    title: "Tell Us Where You're Playing",
     description:
-      'Search by tournament name or paste the facility address. We pin the fields on the map so everything is anchored to where you actually play.',
+      'Enter your tournament name or facility address. We instantly pin the fields on the map so everything is anchored to where you actually play — not the nearest city center.',
   },
   {
     number: '02',
     icon: Hotel,
-    title: 'Find the best place to stay',
+    title: 'Discover the Best Stays Nearby',
     description:
-      'Browse hotels and rentals ranked by drive time to the fields — not the city center. Filter by pool, kitchen, breakfast, parking, and more.',
+      'Browse hotels and rentals ranked by drive time to the fields. Filter by pool, kitchen, breakfast, parking, trailer space, and more. Built for families, not business travelers.',
   },
   {
     number: '03',
     icon: Map,
-    title: 'Your team stays together',
+    title: 'Book Together. Stay Together.',
     description:
-      'When families mark where they booked, they appear on the team map. See exactly where your teammates are staying and coordinate before you arrive.',
+      'When families mark where they booked, they appear as pins on the team map. See your whole team at a glance, coordinate carpools, and arrive ready to play.',
   },
 ]
-
 export default function HowItWorks() {
   return (
     <section className="py-16 lg:py-20" style={{ backgroundColor: '#f5f8fa' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div className="text-center mb-14">
-          <h2 className="section-title">How TravelBallStay works</h2>
-          <p className="section-subtitle">Three steps to a stress-free tournament weekend</p>
+          <h2 className="section-title">How TravelBallStay Works</h2>
+          <p className="section-subtitle" style={{ fontStyle: 'italic' }}>
+            From Tournament to Team Stay — Simplified.
+          </p>
         </div>
-
         <div className="relative">
-          {/* Dashed connecting line — desktop only */}
           <div
             className="hidden lg:block absolute top-10 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-px"
             style={{
@@ -44,14 +41,11 @@ export default function HowItWorks() {
             }}
             aria-hidden="true"
           />
-
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {steps.map((step, index) => {
               const Icon = step.icon
               return (
                 <div key={step.number} className="relative flex flex-col items-center text-center lg:items-start lg:text-left">
-
-                  {/* Step number + icon */}
                   <div className="relative mb-6">
                     <div
                       className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-sm"
@@ -66,7 +60,6 @@ export default function HowItWorks() {
                       {index + 1}
                     </span>
                   </div>
-
                   <h3
                     className="text-xl font-bold mb-3"
                     style={{ color: '#0f1f2e' }}
