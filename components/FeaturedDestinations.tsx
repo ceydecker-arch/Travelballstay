@@ -1,37 +1,43 @@
 const destinations = [
   {
     city: 'Cooperstown, NY',
-    description: 'The ultimate 12U baseball destination',
+    description:
+      "Every 12U player's bucket list. 22 grass fields, the Baseball Hall of Fame, and memories that last a lifetime. Plan your trip early — weeks fill fast.",
     sports: ['⚾ Baseball'],
     accent: '#1a7a4a',
   },
   {
     city: 'Pigeon Forge, TN',
-    description: 'Baseball + Smoky Mountains + family fun',
+    description:
+      'Turn tournament weekend into a family vacation. Baseball in the shadow of the Smoky Mountains with Dollywood, great restaurants, and something for everyone.',
     sports: ['⚾ Baseball', '🥎 Softball'],
     accent: '#f59e0b',
   },
   {
     city: 'Myrtle Beach, SC',
-    description: 'Beach tournaments all season long',
+    description:
+      'Beach tournaments all season long. Stay minutes from the fields and the ocean. One of the most family-friendly tournament destinations in the country.',
     sports: ['⚾ Baseball', '⚽ Soccer', '🏐 Volleyball'],
     accent: '#2a7fc4',
   },
   {
     city: 'Jupiter, FL',
-    description: 'Elite showcase capital of youth baseball',
+    description:
+      'Home of the WWBA World Championship — the most scouted amateur baseball event on earth. Where future pros get their shot in front of 700+ MLB scouts.',
     sports: ['⚾ Baseball'],
     accent: '#1a7a4a',
   },
   {
     city: 'Marietta, GA',
-    description: "The heart of Perfect Game's Southeast hub",
+    description:
+      "The capital of youth baseball. Home of Perfect Game's Southeast hub and East Cobb Baseball Complex — 35+ weeks of elite events every year.",
     sports: ['⚾ Baseball', '🥎 Softball'],
     accent: '#f59e0b',
   },
   {
     city: 'Surprise, AZ',
-    description: "USA Baseball's national championship home",
+    description:
+      'Where USA Baseball holds its National Team Championships. Play on the same fields as the Royals and Rangers — and enjoy perfect Arizona weather.',
     sports: ['⚾ Baseball'],
     accent: '#2a7fc4',
   },
