@@ -98,12 +98,6 @@ export default function Hero() {
 
           {/* Sport pills */}
           <div className="mb-10">
-            <p
-              className="text-xs font-medium tracking-wider uppercase mb-3"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
-            >
-              Available for:
-            </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {sports.map((sport, index) => (
                 <span
