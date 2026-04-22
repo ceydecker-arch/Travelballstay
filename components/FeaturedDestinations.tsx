@@ -18,7 +18,7 @@ const destinations = [
   },
   {
     id: 2,
-    name: 'Ripken Experience',
+    name: 'Ripken Experience — Pigeon Forge',
     city: 'Pigeon Forge',
     state: 'TN',
     description: 'Baseball meets the Smoky Mountains. Turn tournament weekend into a family vacation.',
@@ -33,7 +33,7 @@ const destinations = [
   },
   {
     id: 3,
-    name: 'Ripken Experience',
+    name: 'Ripken Experience — Myrtle Beach',
     city: 'Myrtle Beach',
     state: 'SC',
     description: 'Beach tournaments all season. Stay minutes from the fields and the ocean.',
