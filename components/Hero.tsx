@@ -83,17 +83,15 @@ export default function Hero() {
 
           {/* Headline */}
           <h1 className="text-5xl lg:text-7xl font-bold tracking-tight leading-tight mb-6 text-white">
-            Tournament Travel,
+            Travel Ball Weekends Are Chaos.
             <br />
-            <span style={{ color: '#f59e0b' }}>Finally Figured Out.</span>
+            <span style={{ color: '#f59e0b' }}>We Fix That.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-lg sm:text-xl leading-relaxed mb-8 max-w-2xl mx-auto text-white">
-            Find hotels near the fields, see where your teammates are staying,
-            and keep your whole team organized — all in one place. Built for
-            baseball, softball, soccer, basketball, volleyball, cheer, and every
-            travel sport your family loves.
+            Find your tournament, book team-friendly stays, and keep everyone
+            together — without the stress.
           </p>
 
           {/* Sport pills */}
