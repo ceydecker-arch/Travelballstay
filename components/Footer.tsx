@@ -85,17 +85,6 @@ export default function Footer() {
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
             © 2025 TravelBallStay. Built for travel sport families.
           </p>
-          <div className="flex items-center gap-2">
-            <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'rgba(26,122,74,0.3)', color: '#6fdba9' }}>
-              ⚾ Baseball
-            </span>
-            <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'rgba(26,122,74,0.3)', color: '#6fdba9' }}>
-              ⚽ Soccer
-            </span>
-            <span className="text-xs px-2 py-1 rounded-full" style={{ backgroundColor: 'rgba(26,122,74,0.3)', color: '#6fdba9' }}>
-              🏀 Basketball + more
-            </span>
-          </div>
         </div>
       </div>
     </footer>
