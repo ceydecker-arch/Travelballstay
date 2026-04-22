@@ -11,7 +11,6 @@ const destinations = [
     sports: ['⚾ Baseball'],
     gradient: 'linear-gradient(135deg, #0f4c2a 0%, #1a7a4a 50%, #0d3d20 100%)',
     badge: 'Most Popular',
-    teams: '180+ teams planned trips here',
   },
   {
     id: 2,
@@ -24,7 +23,6 @@ const destinations = [
     sports: ['⚾ Baseball', '🥎 Softball'],
     gradient: 'linear-gradient(135deg, #1a3a5c 0%, #2a6496 50%, #0f2840 100%)',
     badge: null,
-    teams: '94 teams planned trips here',
   },
   {
     id: 3,
@@ -37,7 +35,6 @@ const destinations = [
     sports: ['⚾ Baseball', '⚽ Soccer'],
     gradient: 'linear-gradient(135deg, #0a3d62 0%, #1e6fa3 50%, #062a47 100%)',
     badge: 'Family Favorite',
-    teams: '112 teams planned trips here',
   },
   {
     id: 4,
@@ -50,7 +47,6 @@ const destinations = [
     sports: ['⚾ Baseball'],
     gradient: 'linear-gradient(135deg, #7b3f00 0%, #c47a1e 50%, #5c2e00 100%)',
     badge: 'Elite Showcase',
-    teams: '67 teams planned trips here',
   },
   {
     id: 5,
@@ -63,7 +59,6 @@ const destinations = [
     sports: ['⚾ Baseball', '🥎 Softball'],
     gradient: 'linear-gradient(135deg, #1a4a1a 0%, #2d7a2d 50%, #0f300f 100%)',
     badge: null,
-    teams: '143 teams planned trips here',
   },
   {
     id: 6,
@@ -76,7 +71,6 @@ const destinations = [
     sports: ['⚾ Baseball'],
     gradient: 'linear-gradient(135deg, #4a2800 0%, #8b5a1a 50%, #3a1e00 100%)',
     badge: null,
-    teams: '58 teams planned trips here',
   },
 ]
 export default function FeaturedDestinations() {
@@ -114,126 +108,101 @@ export default function FeaturedDestinations() {
               href="#"
               className="group block no-underline rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2"
               style={{
-                boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+                background: dest.gradient,
+                boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                minHeight: '320px',
               }}
             >
-              {/* Top gradient area */}
-              <div
-                className="relative h-32 w-full transition-transform duration-500 group-hover:scale-105"
-                style={{ background: dest.gradient }}
-              >
-                {/* Badge */}
-                {dest.badge && (
-                  <div className="absolute top-3 left-3">
+              <div className="flex flex-col h-full p-6">
+                {/* Top row — badge left, sports right */}
+                <div className="flex items-start justify-between mb-auto">
+                  <div>
+                    {dest.badge && (
+                      <span
+                        className="text-xs font-bold px-3 py-1 rounded-full"
+                        style={{
+                          backgroundColor: '#f59e0b',
+                          color: '#0f1f2e',
+                        }}
+                      >
+                        {dest.badge}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1 justify-end">
+                    {dest.sports.map((sport) => (
+                      <span
+                        key={sport}
+                        className="text-xs px-2 py-0.5 rounded-full"
+                        style={{
+                          backgroundColor: 'rgba(0,0,0,0.25)',
+                          color: 'white',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                        }}
+                      >
+                        {sport}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {/* Spacer */}
+                <div className="flex-1 min-h-8" />
+                {/* Bottom content */}
+                <div>
+                  <h3
+                    className="text-xl font-bold text-white mb-1 leading-tight"
+                  >
+                    {dest.name}
+                  </h3>
+                  <p
+                    className="text-sm mb-3"
+                    style={{ color: 'rgba(255,255,255,0.7)' }}
+                  >
+                    📍 {dest.city}
+                  </p>
+                  <p
+                    className="text-sm leading-relaxed mb-4"
+                    style={{ color: 'rgba(255,255,255,0.8)' }}
+                  >
+                    {dest.description}
+                  </p>
+                  {/* Stats */}
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span
-                      className="text-xs font-bold px-3 py-1 rounded-full"
-                      style={{
-                        backgroundColor: '#f59e0b',
-                        color: '#0f1f2e',
-                      }}
+                      className="text-xs"
+                      style={{ color: 'rgba(255,255,255,0.65)' }}
                     >
-                      {dest.badge}
+                      🏟️ {dest.fields}
+                    </span>
+                    <span
+                      style={{ color: 'rgba(255,255,255,0.3)' }}
+                    >·</span>
+                    <span
+                      className="text-xs"
+                      style={{ color: 'rgba(255,255,255,0.65)' }}
+                    >
+                      🏨 {dest.stays}
+                    </span>
+                    <span
+                      style={{ color: 'rgba(255,255,255,0.3)' }}
+                    >·</span>
+                    <span
+                      className="text-xs"
+                      style={{ color: 'rgba(255,255,255,0.65)' }}
+                    >
+                      📅 {dest.season}
                     </span>
                   </div>
-                )}
-                {/* Sport tags top right */}
-                <div className="absolute top-3 right-3 flex flex-wrap gap-1 justify-end">
-                  {dest.sports.map((sport) => (
-                    <span
-                      key={sport}
-                      className="text-xs px-2 py-0.5 rounded-full"
-                      style={{
-                        backgroundColor: 'rgba(0,0,0,0.3)',
-                        color: 'white',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                      }}
-                    >
-                      {sport}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {/* Bottom white content area */}
-              <div
-                className="p-5"
-                style={{
-                  backgroundColor: 'white',
-                  borderLeft: '1px solid #e5e7eb',
-                  borderRight: '1px solid #e5e7eb',
-                  borderBottom: '1px solid #e5e7eb',
-                  borderBottomLeftRadius: '16px',
-                  borderBottomRightRadius: '16px',
-                }}
-              >
-                {/* Name and city */}
-                <h3
-                  className="text-base font-bold mb-0.5 leading-tight"
-                  style={{ color: '#0f1f2e' }}
-                >
-                  {dest.name}
-                </h3>
-                <p
-                  className="text-xs mb-3"
-                  style={{ color: '#8fa3b2' }}
-                >
-                  📍 {dest.city}
-                </p>
-                {/* Description */}
-                <p
-                  className="text-sm leading-relaxed mb-4"
-                  style={{ color: '#5a7080' }}
-                >
-                  {dest.description}
-                </p>
-                {/* Stats — simple text only, no icons */}
-                <div
-                  className="flex flex-wrap gap-2 mb-3 pb-3"
-                  style={{ borderBottom: '1px solid #f0f0f0' }}
-                >
-                  <span
-                    className="text-xs px-2 py-1 rounded-full"
+                  {/* CTA Button */}
+                  <div
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 group-hover:gap-3"
                     style={{
-                      backgroundColor: '#f5f8fa',
-                      color: '#5a7080',
-                      border: '1px solid #e5e7eb',
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                      border: '1px solid rgba(255,255,255,0.25)',
                     }}
                   >
-                    🏟️ {dest.fields}
-                  </span>
-                  <span
-                    className="text-xs px-2 py-1 rounded-full"
-                    style={{
-                      backgroundColor: '#f5f8fa',
-                      color: '#5a7080',
-                      border: '1px solid #e5e7eb',
-                    }}
-                  >
-                    🏨 {dest.stays}
-                  </span>
-                  <span
-                    className="text-xs px-2 py-1 rounded-full"
-                    style={{
-                      backgroundColor: '#f5f8fa',
-                      color: '#5a7080',
-                      border: '1px solid #e5e7eb',
-                    }}
-                  >
-                    📅 {dest.season}
-                  </span>
-                </div>
-                {/* Teams count */}
-                <p
-                  className="text-xs font-medium mb-4"
-                  style={{ color: '#1a7a4a' }}
-                >
-                  👥 {dest.teams}
-                </p>
-                {/* CTA */}
-                <div
-                  className="w-full text-center py-2.5 rounded-xl text-sm font-semibold text-white transition-all duration-200 group-hover:opacity-90"
-                  style={{ backgroundColor: '#1a7a4a' }}
-                >
-                  View Stays →
+                    View Stays →
+                  </div>
                 </div>
               </div>
             </a>
