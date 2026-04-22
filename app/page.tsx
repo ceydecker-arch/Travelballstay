@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
+import PainSection from '@/components/PainSection'
 import QuickActions from '@/components/QuickActions'
 import HowItWorks from '@/components/HowItWorks'
 import TeamMapFeature from '@/components/TeamMapFeature'
@@ -13,6 +14,7 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
+      <PainSection />
       <QuickActions />
       <HowItWorks />
       <TeamMapFeature />
