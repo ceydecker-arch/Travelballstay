@@ -185,13 +185,6 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* Social proof */}
-          <p
-            className="mt-8 text-sm"
-            style={{ color: 'rgba(255,255,255,0.7)' }}
-          >
-            Trusted by travel sport families in 40+ states
-          </p>
         </div>
       </div>
     </section>
