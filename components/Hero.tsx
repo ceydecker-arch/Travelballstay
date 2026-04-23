@@ -185,6 +185,13 @@ export default function Hero() {
             </a>
           </div>
 
+          <p
+            className="text-sm mt-4 font-medium"
+            style={{ color: 'rgba(255,255,255,0.7)' }}
+          >
+            Teams that don&apos;t plan early get split across multiple hotels.
+          </p>
+
         </div>
       </div>
     </section>
