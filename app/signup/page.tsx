@@ -1,11 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { MapPin, Check } from 'lucide-react'
 
 export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', backgroundColor: '#f5f8fa' }} />}>
+      <SignUpInner />
+    </Suspense>
+  )
+}
+
+function SignUpInner() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams?.get('redirect') || '/dashboard'
 

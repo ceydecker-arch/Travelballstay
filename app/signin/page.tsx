@@ -1,11 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { MapPin } from 'lucide-react'
 
 export default function SignInPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', backgroundColor: '#f5f8fa' }} />}>
+      <SignInInner />
+    </Suspense>
+  )
+}
+
+function SignInInner() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams?.get('redirect') || '/dashboard'
   const errorParam = searchParams?.get('error')
