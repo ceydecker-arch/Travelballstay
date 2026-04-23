@@ -40,11 +40,10 @@ export default function TeamMapFeature() {
             </h2>
 
             <p className="text-lg leading-relaxed mb-8" style={{ color: '#5a7080' }}>
-              See exactly where every family on your team is staying — all in one place.
-              When families on your team mark where they booked,
-              they show up as pins on the team map — color coded by booking status.
-              Blue means booked. Yellow means interested. See at a glance who&apos;s near
-              the fields and who still needs to book.
+              See exactly where every family is staying — all in one place.
+              When families mark where they booked, they show up as pins on the team map —
+              color coded by booking status. Blue means booked. Yellow means interested.
+              See at a glance who is near the fields and who still needs to book.
             </p>
 
             {/* Benefit checklist */}

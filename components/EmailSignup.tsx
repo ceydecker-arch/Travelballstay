@@ -25,23 +25,25 @@ export default function EmailSignup() {
           Join families who are done letting their team get scattered across hotels every tournament weekend.
         </p>
 
-        <ul className="text-left max-w-xs mx-auto mb-6 space-y-2">
-          <li className="flex items-center gap-2 text-sm"
-            style={{ color: 'rgba(255,255,255,0.85)' }}>
-            <span style={{ color: '#6fdba9' }}>✓</span>
-            Free early access when we launch
-          </li>
-          <li className="flex items-center gap-2 text-sm"
-            style={{ color: 'rgba(255,255,255,0.85)' }}>
-            <span style={{ color: '#6fdba9' }}>✓</span>
-            First to know about new tournaments in your area
-          </li>
-          <li className="flex items-center gap-2 text-sm"
-            style={{ color: 'rgba(255,255,255,0.85)' }}>
-            <span style={{ color: '#6fdba9' }}>✓</span>
-            No spam — one email when we are ready
-          </li>
-        </ul>
+        <div className="flex flex-col gap-2 max-w-xs mx-auto mb-6 text-left">
+          {[
+            'Free early access when we launch',
+            'First to know about new tournaments in your area',
+            'No spam — one email when we are ready',
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-2">
+              <span
+                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                style={{ backgroundColor: 'rgba(111,219,169,0.2)', color: '#6fdba9' }}
+              >
+                ✓
+              </span>
+              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
 
         {!submitted ? (
           <form

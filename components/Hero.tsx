@@ -3,58 +3,6 @@
 import Image from 'next/image'
 import { Search } from 'lucide-react'
 
-const sports = [
-  {
-    icon: '⚾',
-    label: 'Baseball',
-    bg: 'rgba(26, 122, 74, 0.25)',
-    border: 'rgba(26, 122, 74, 0.5)',
-    hoverBg: 'rgba(26, 122, 74, 0.4)',
-  },
-  {
-    icon: '🥎',
-    label: 'Softball',
-    bg: 'rgba(236, 72, 153, 0.25)',
-    border: 'rgba(236, 72, 153, 0.5)',
-    hoverBg: 'rgba(236, 72, 153, 0.4)',
-  },
-  {
-    icon: '⚽',
-    label: 'Soccer',
-    bg: 'rgba(42, 127, 196, 0.25)',
-    border: 'rgba(42, 127, 196, 0.5)',
-    hoverBg: 'rgba(42, 127, 196, 0.4)',
-  },
-  {
-    icon: '🏀',
-    label: 'Basketball',
-    bg: 'rgba(249, 115, 22, 0.25)',
-    border: 'rgba(249, 115, 22, 0.5)',
-    hoverBg: 'rgba(249, 115, 22, 0.4)',
-  },
-  {
-    icon: '🏐',
-    label: 'Volleyball',
-    bg: 'rgba(147, 51, 234, 0.25)',
-    border: 'rgba(147, 51, 234, 0.5)',
-    hoverBg: 'rgba(147, 51, 234, 0.4)',
-  },
-  {
-    icon: '📣',
-    label: 'Cheer',
-    bg: 'rgba(245, 158, 11, 0.25)',
-    border: 'rgba(245, 158, 11, 0.5)',
-    hoverBg: 'rgba(245, 158, 11, 0.4)',
-  },
-  {
-    icon: '➕',
-    label: 'More Sports',
-    bg: 'rgba(255, 255, 255, 0.1)',
-    border: 'rgba(255, 255, 255, 0.3)',
-    hoverBg: 'rgba(255, 255, 255, 0.2)',
-  },
-]
-
 export default function Hero() {
   return (
     <section
@@ -94,30 +42,44 @@ export default function Hero() {
             together — without the stress.
           </p>
 
-          {/* Sport pills */}
-          <div className="mb-10">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {sports.map((sport, index) => (
+          {/* Sport tiles */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+            {[
+              { icon: '⚾', label: 'Baseball', color: '#1a7a4a', bg: 'rgba(26,122,74,0.25)', border: 'rgba(26,122,74,0.5)' },
+              { icon: '🥎', label: 'Softball', color: '#ec4899', bg: 'rgba(236,72,153,0.25)', border: 'rgba(236,72,153,0.5)' },
+              { icon: '⚽', label: 'Soccer', color: '#2a7fc4', bg: 'rgba(42,127,196,0.25)', border: 'rgba(42,127,196,0.5)' },
+              { icon: '🏀', label: 'Basketball', color: '#f97316', bg: 'rgba(249,115,22,0.25)', border: 'rgba(249,115,22,0.5)' },
+              { icon: '🏐', label: 'Volleyball', color: '#9333ea', bg: 'rgba(147,51,234,0.25)', border: 'rgba(147,51,234,0.5)' },
+              { icon: '📣', label: 'Cheer', color: '#f59e0b', bg: 'rgba(245,158,11,0.25)', border: 'rgba(245,158,11,0.5)' },
+              { icon: '➕', label: 'More', color: 'rgba(255,255,255,0.6)', bg: 'rgba(255,255,255,0.08)', border: 'rgba(255,255,255,0.2)' },
+            ].map((sport) => (
+              <div
+                key={sport.label}
+                className="flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 hover:scale-110"
+                style={{
+                  width: '72px',
+                  height: '72px',
+                  borderRadius: '16px',
+                  backgroundColor: sport.bg,
+                  border: `1px solid ${sport.border}`,
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <span style={{ fontSize: '24px', lineHeight: 1 }}>{sport.icon}</span>
                 <span
-                  key={sport.label}
-                  className="sport-pill inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white backdrop-blur-sm cursor-pointer transition-all duration-200 ease-out hover:scale-[1.08]"
                   style={{
-                    backgroundColor: sport.bg,
-                    border: `1px solid ${sport.border}`,
-                    animationDelay: `${index * 75}ms`,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = sport.hoverBg
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = sport.bg
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    color: 'white',
+                    letterSpacing: '0.03em',
+                    textAlign: 'center',
+                    lineHeight: 1.2,
                   }}
                 >
-                  <span className="text-base">{sport.icon}</span>
                   {sport.label}
                 </span>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
           {/* Search bar */}
@@ -153,7 +115,7 @@ export default function Hero() {
               className="flex-shrink-0 px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#1a7a4a' }}
             >
-              Find Trips
+              Search
             </button>
           </div>
 
