@@ -68,13 +68,16 @@ export default function Navbar() {
           </a>
 
           {/* Desktop nav links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-8 ml-12">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm font-medium transition-colors duration-150 hover:text-green-700"
-                style={{ color: '#4a5e6d' }}
+                className="text-xs font-bold uppercase transition-colors duration-150 hover:text-green-700 whitespace-nowrap"
+                style={{
+                  color: '#0f1f2e',
+                  letterSpacing: '0.15em',
+                }}
               >
                 {link.label}
               </a>
@@ -87,14 +90,14 @@ export default function Navbar() {
               <>
                 <a
                   href="/dashboard"
-                  className="text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-150 hover:bg-green-50"
+                  className="text-sm font-bold px-4 py-2 rounded-lg transition-all duration-150 hover:bg-green-50 whitespace-nowrap"
                   style={{ color: '#2D6A4F' }}
                 >
                   My Trips
                 </a>
                 <button
                   onClick={handleSignOut}
-                  className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:bg-gray-50"
+                  className="text-sm font-bold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:bg-gray-50 whitespace-nowrap"
                   style={{ color: '#4a5e6d' }}
                 >
                   Sign Out
@@ -104,14 +107,14 @@ export default function Navbar() {
               <>
                 <a
                   href="/signin"
-                  className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50"
+                  className="text-sm font-bold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50 whitespace-nowrap"
                   style={{ color: '#2D6A4F' }}
                 >
                   Sign In
                 </a>
                 <a
                   href="/signup"
-                  className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90"
+                  className="text-sm font-bold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90 whitespace-nowrap"
                   style={{ backgroundColor: '#2D6A4F' }}
                 >
                   Get Started

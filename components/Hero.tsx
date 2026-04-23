@@ -179,20 +179,14 @@ export default function Hero() {
             </a>
             <a
               href="/create-trip"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold border-2 transition-all duration-150 active:scale-95 text-white"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold transition-all duration-150 hover:-translate-y-px active:scale-95"
               style={{
-                borderColor: '#ffffff',
-                backgroundColor: 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  'rgba(255,255,255,0.1)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent'
+                backgroundColor: '#f59e0b',
+                color: '#0f1f2e',
+                boxShadow: '0 4px 20px rgba(245,158,11,0.5)',
               }}
             >
-              Create a Trip
+              Create a Trip →
             </a>
           </div>
 
