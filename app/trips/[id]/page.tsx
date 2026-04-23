@@ -117,8 +117,27 @@ export default function TripDetailPage() {
     if (!trip) return
     const origin =
       typeof window !== 'undefined' ? window.location.origin : 'https://travelballstay.com'
+    const shareUrl = `${origin}/join/${trip.invite_code}`
+    const shareText = `Join our team trip on TravelBallStay — "${trip.name}". Tap the link to RSVP and see where everyone is staying.`
+
+    // Try native share sheet first (iOS/Android, desktop Safari/Chrome)
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: `Join ${trip.name} on TravelBallStay`,
+          text: shareText,
+          url: shareUrl,
+        })
+        return
+      } catch (err: any) {
+        // AbortError = user dismissed share sheet. Don't fall back.
+        if (err?.name === 'AbortError') return
+      }
+    }
+
+    // Fallback: copy link to clipboard
     try {
-      await navigator.clipboard.writeText(`${origin}/join/${trip.invite_code}`)
+      await navigator.clipboard.writeText(shareUrl)
       setShareCopied(true)
       setTimeout(() => setShareCopied(false), 1500)
     } catch {}
