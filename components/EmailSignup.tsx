@@ -18,12 +18,30 @@ export default function EmailSignup() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
         <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-          Get Early Access — It&apos;s Free.
+          Get Early Access — Keep Your Team Together.
         </h2>
 
         <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.8)' }}>
-          Be among the first families to plan smarter tournament weekends with TravelBallStay.
+          Join families who are done letting their team get scattered across hotels every tournament weekend.
         </p>
+
+        <ul className="text-left max-w-xs mx-auto mb-6 space-y-2">
+          <li className="flex items-center gap-2 text-sm"
+            style={{ color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ color: '#6fdba9' }}>✓</span>
+            Free early access when we launch
+          </li>
+          <li className="flex items-center gap-2 text-sm"
+            style={{ color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ color: '#6fdba9' }}>✓</span>
+            First to know about new tournaments in your area
+          </li>
+          <li className="flex items-center gap-2 text-sm"
+            style={{ color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ color: '#6fdba9' }}>✓</span>
+            No spam — one email when we are ready
+          </li>
+        </ul>
 
         {!submitted ? (
           <form

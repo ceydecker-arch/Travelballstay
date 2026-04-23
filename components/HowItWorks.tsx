@@ -29,7 +29,7 @@ export default function HowItWorks() {
         <div className="text-center mb-14">
           <h2 className="section-title">How TravelBallStay Works</h2>
           <p className="section-subtitle" style={{ fontStyle: 'italic' }}>
-            From Tournament to Team Stay — Simplified.
+            From scattered teams to staying together — in three steps.
           </p>
         </div>
         <div className="relative">
@@ -74,6 +74,13 @@ export default function HowItWorks() {
             })}
           </div>
         </div>
+        <p
+          className="text-center text-sm font-medium mt-10"
+          style={{ color: '#1a7a4a' }}
+        >
+          Tournament season fills up fast.
+          Lock in your team stay early.
+        </p>
       </div>
     </section>
   )

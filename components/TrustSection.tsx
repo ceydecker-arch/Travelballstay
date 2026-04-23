@@ -25,12 +25,9 @@ export default function TrustSection() {
           className="text-lg leading-relaxed mb-8"
           style={{ color: '#5a7080' }}
         >
-          TravelBallStay is designed to make tournament weekends
-          easier for parents, coaches, and teams. We know what
-          it feels like to drive 45 minutes to a 6am game because
-          you booked the wrong hotel. We know the group text chaos.
-          We built this so you can spend less time coordinating
-          and more time enjoying the game.
+          We know what it feels like when your team gets
+          scattered across three different hotels. We built
+          this so that never happens again.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[

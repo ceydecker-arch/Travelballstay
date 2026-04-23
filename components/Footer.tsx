@@ -35,7 +35,7 @@ export default function Footer() {
               <span className="text-xl font-bold text-white">TravelBallStay</span>
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              Tournament travel, finally figured out. Built for travel sport families everywhere.
+              Where teams stay together.
             </p>
           </div>
 
