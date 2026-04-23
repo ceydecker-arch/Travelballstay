@@ -1,14 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { MapPin } from 'lucide-react'
 
 export default function SignInPage() {
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams?.get('redirect') || '/dashboard'
+  const errorParam = searchParams?.get('error')
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (errorParam) setError(errorParam)
+  }, [errorParam])
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +34,7 @@ export default function SignInPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      window.location.href = '/dashboard'
+      window.location.href = redirectTo
     }
   }
 
@@ -251,7 +260,7 @@ export default function SignInPage() {
               >
                 Don&apos;t have an account?{' '}
                 <a
-                  href="/signup"
+                  href={`/signup?redirect=${encodeURIComponent(redirectTo)}`}
                   className="font-semibold"
                   style={{ color: '#2D6A4F' }}
                 >

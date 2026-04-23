@@ -1,10 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { MapPin, Check } from 'lucide-react'
 
 export default function SignUpPage() {
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams?.get('redirect') || '/dashboard'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
@@ -18,6 +22,7 @@ export default function SignUpPage() {
     setError('')
 
     const supabase = createClient()
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -25,7 +30,7 @@ export default function SignUpPage() {
         data: {
           full_name: fullName,
         },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: callbackUrl,
       },
     })
 
@@ -179,7 +184,7 @@ export default function SignUpPage() {
                     Click it to activate your account.
                   </p>
                   <a
-                    href="/signin"
+                    href={`/signin?redirect=${encodeURIComponent(redirectTo)}`}
                     className="inline-block mt-6 text-sm font-semibold"
                     style={{ color: '#2D6A4F' }}
                   >
@@ -289,7 +294,7 @@ export default function SignUpPage() {
                   >
                     Already have an account?{' '}
                     <a
-                      href="/signin"
+                      href={`/signin?redirect=${encodeURIComponent(redirectTo)}`}
                       className="font-semibold"
                       style={{ color: '#2D6A4F' }}
                     >
