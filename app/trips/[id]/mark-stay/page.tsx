@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
+import { Home, Check, Heart, MapPin, Calendar, ArrowLeft } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 
 interface ExistingStay {
@@ -52,7 +53,6 @@ export default function MarkStayPage() {
         return
       }
 
-      // Check trip membership
       const { data: member } = await supabase
         .from('trip_members')
         .select('id')
@@ -60,7 +60,6 @@ export default function MarkStayPage() {
         .eq('profile_id', user.id)
         .maybeSingle()
 
-      // Load trip name for display
       const { data: trip } = await supabase
         .from('trips')
         .select('id, name, created_by')
@@ -80,7 +79,6 @@ export default function MarkStayPage() {
         return
       }
 
-      // Load existing stay if any
       const { data: stay } = await supabase
         .from('family_stays')
         .select('id, property_name, address, booking_status, check_in, check_out, notes')
@@ -93,7 +91,7 @@ export default function MarkStayPage() {
         setExistingStayId(s.id)
         setPropertyName(s.property_name || '')
         setAddress(s.address || '')
-        setBookingStatus((s.booking_status === 'interested' ? 'interested' : 'booked'))
+        setBookingStatus(s.booking_status === 'interested' ? 'interested' : 'booked')
         setCheckIn(s.check_in || '')
         setCheckOut(s.check_out || '')
         setNotes(s.notes || '')
@@ -137,10 +135,7 @@ export default function MarkStayPage() {
 
     let err
     if (existingStayId) {
-      const res = await supabase
-        .from('family_stays')
-        .update(payload)
-        .eq('id', existingStayId)
+      const res = await supabase.from('family_stays').update(payload).eq('id', existingStayId)
       err = res.error
     } else {
       const res = await supabase.from('family_stays').insert(payload)
@@ -157,9 +152,19 @@ export default function MarkStayPage() {
     window.location.href = `/trips/${tripId}`
   }
 
+  const AmberBar = () => (
+    <div
+      style={{
+        height: '4px',
+        background: 'linear-gradient(to right, #2D6A4F, #f59e0b, #2D6A4F)',
+      }}
+    />
+  )
+
   if (checkingAuth || loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+        <AmberBar />
         <Navbar />
         <div className="flex items-center justify-center py-24">
           <div
@@ -171,39 +176,83 @@ export default function MarkStayPage() {
     )
   }
 
+  const focusStyles = {
+    onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      e.target.style.borderColor = '#2D6A4F'
+      e.target.style.boxShadow = '0 0 0 3px rgba(45,106,79,0.15)'
+    },
+    onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      e.target.style.borderColor = '#dde8ee'
+      e.target.style.boxShadow = 'none'
+    },
+  }
+
   const inputStyle: React.CSSProperties = {
     borderColor: '#dde8ee',
     color: '#0f1f2e',
   }
-  const labelStyle: React.CSSProperties = { color: '#0f1f2e' }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+      <AmberBar />
       <Navbar />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <p
-            className="text-xs font-semibold uppercase tracking-widest mb-2"
-            style={{ color: '#2D6A4F' }}
+      {/* Navy header */}
+      <section
+        className="relative overflow-hidden px-4 py-10 lg:py-14"
+        style={{ backgroundColor: '#0f1f2e' }}
+      >
+        <div
+          className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #2D6A4F 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full opacity-10 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
+        />
+
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <a
+            href={`/trips/${tripId}`}
+            className="inline-flex items-center gap-2 text-sm font-semibold mb-5 transition-opacity hover:opacity-80"
+            style={{ color: '#f59e0b' }}
           >
-            {tripName}
-          </p>
-          <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ color: '#0f1f2e' }}>
-            {existingStayId ? 'Update your stay' : 'Mark your stay'}
+            <ArrowLeft size={16} />
+            Back to {tripName || 'trip'}
+          </a>
+
+          <span
+            className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4"
+            style={{
+              backgroundColor: 'rgba(245,158,11,0.15)',
+              color: '#f59e0b',
+              border: '1px solid rgba(245,158,11,0.3)',
+            }}
+          >
+            {existingStayId ? 'Update Stay' : 'Mark Your Stay'}
+          </span>
+
+          <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-3">
+            {existingStayId ? 'Update your family stay' : 'Where is your family staying?'}
           </h1>
-          <p className="text-sm" style={{ color: '#5a7080' }}>
-            Tell your teammates where your family is staying so everyone can stay close.
+          <p className="text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
+            Tell your teammates where you&apos;re staying so everyone can book nearby and keep the team together.
           </p>
         </div>
+      </section>
 
+      {/* Form card */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div
-          className="bg-white rounded-2xl border p-6 sm:p-8"
-          style={{ borderColor: '#dde8ee' }}
+          className="bg-white rounded-2xl border p-6 sm:p-8 shadow-sm"
+          style={{
+            borderColor: '#dde8ee',
+            borderTop: '4px solid #2D6A4F',
+          }}
         >
           {error && (
             <div
-              className="rounded-xl px-4 py-3 mb-4 text-sm"
+              className="rounded-xl px-4 py-3 mb-5 text-sm"
               style={{
                 backgroundColor: '#fef2f2',
                 color: '#dc2626',
@@ -214,90 +263,149 @@ export default function MarkStayPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Status — radio cards first */}
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Property name *
-              </label>
-              <input
-                type="text"
-                value={propertyName}
-                onChange={(e) => setPropertyName(e.target.value)}
-                placeholder="e.g. Hampton Inn Cooperstown"
-                required
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Address *
-              </label>
-              <input
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="Full address"
-                required
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2" style={labelStyle}>
-                Booking status *
-              </label>
+              <p
+                className="text-xs font-bold uppercase tracking-widest mb-3"
+                style={{ color: '#f59e0b' }}
+              >
+                Your Booking Status
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <RadioCard
                   selected={bookingStatus === 'interested'}
                   onClick={() => setBookingStatus('interested')}
+                  icon={<Heart size={20} />}
                   title="Interested"
                   subtitle="Looking at this option"
+                  accentColor="#f59e0b"
+                  bgColor="#fef3c7"
+                  textColor="#92400e"
                 />
                 <RadioCard
                   selected={bookingStatus === 'booked'}
                   onClick={() => setBookingStatus('booked')}
+                  icon={<Check size={20} />}
                   title="Booked"
                   subtitle="Confirmed reservation"
+                  accentColor="#2D6A4F"
+                  bgColor="#e8f5ee"
+                  textColor="#2D6A4F"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  Check-in
-                </label>
-                <input
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none"
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  Check-out
-                </label>
-                <input
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none"
-                  style={inputStyle}
-                />
-              </div>
-            </div>
-
+            {/* Property details */}
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
+              <p
+                className="text-xs font-bold uppercase tracking-widest mb-4"
+                style={{ color: '#f59e0b' }}
+              >
+                Stay Details
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <label
+                    className="flex items-center gap-1.5 text-sm font-medium mb-1.5"
+                    style={{ color: '#0f1f2e' }}
+                  >
+                    <Home size={14} style={{ color: '#2D6A4F' }} />
+                    Property name *
+                  </label>
+                  <input
+                    type="text"
+                    value={propertyName}
+                    onChange={(e) => setPropertyName(e.target.value)}
+                    placeholder="e.g. Hampton Inn Cooperstown"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className="flex items-center gap-1.5 text-sm font-medium mb-1.5"
+                    style={{ color: '#0f1f2e' }}
+                  >
+                    <MapPin size={14} style={{ color: '#2D6A4F' }} />
+                    Address *
+                  </label>
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Full address or city"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Dates */}
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-widest mb-4"
+                style={{ color: '#f59e0b' }}
+              >
+                Check-in / Check-out
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    className="flex items-center gap-1.5 text-sm font-medium mb-1.5"
+                    style={{ color: '#0f1f2e' }}
+                  >
+                    <Calendar size={14} style={{ color: '#2D6A4F' }} />
+                    Check-in
+                  </label>
+                  <input
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+                <div>
+                  <label
+                    className="flex items-center gap-1.5 text-sm font-medium mb-1.5"
+                    style={{ color: '#0f1f2e' }}
+                  >
+                    <Calendar size={14} style={{ color: '#2D6A4F' }} />
+                    Check-out
+                  </label>
+                  <input
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <p
+                className="text-xs font-bold uppercase tracking-widest mb-4"
+                style={{ color: '#f59e0b' }}
+              >
+                Additional Info
+              </p>
+              <label
+                className="block text-sm font-medium mb-1.5"
+                style={{ color: '#0f1f2e' }}
+              >
                 Notes (optional)
               </label>
               <textarea
@@ -307,25 +415,34 @@ export default function MarkStayPage() {
                 placeholder="Any details your team should know..."
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all resize-y"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
+                {...focusStyles}
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full py-3.5 rounded-xl text-base font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#2D6A4F' }}
+              className="w-full py-4 rounded-xl text-base font-bold text-white transition-all hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
+                boxShadow: '0 4px 14px rgba(45,106,79,0.4)',
+              }}
             >
               {submitting
                 ? 'Saving...'
                 : existingStayId
-                ? 'Update My Stay'
-                : 'Save My Stay'}
+                ? 'Update My Stay →'
+                : 'Save My Stay →'}
             </button>
           </form>
         </div>
+
+        <p
+          className="text-center text-xs mt-6 font-semibold tracking-wide"
+          style={{ color: '#8fa3b2' }}
+        >
+          Where teams stay together.
+        </p>
       </div>
     </div>
   )
@@ -334,42 +451,62 @@ export default function MarkStayPage() {
 function RadioCard({
   selected,
   onClick,
+  icon,
   title,
   subtitle,
+  accentColor,
+  bgColor,
+  textColor,
 }: {
   selected: boolean
   onClick: () => void
+  icon: React.ReactNode
   title: string
   subtitle: string
+  accentColor: string
+  bgColor: string
+  textColor: string
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="text-left p-4 rounded-xl border-2 transition-all"
+      className="text-left p-5 rounded-2xl border-2 transition-all hover:-translate-y-px"
       style={{
-        borderColor: selected ? '#2D6A4F' : '#dde8ee',
-        backgroundColor: selected ? '#e8f5ee' : 'white',
+        borderColor: selected ? accentColor : '#dde8ee',
+        backgroundColor: selected ? bgColor : 'white',
+        boxShadow: selected ? `0 4px 14px ${accentColor}33` : 'none',
       }}
     >
-      <div className="flex items-center gap-2 mb-1">
+      <div className="flex items-start gap-3">
         <div
-          className="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{
-            borderColor: selected ? '#2D6A4F' : '#dde8ee',
+            backgroundColor: selected ? accentColor : bgColor,
+            color: selected ? 'white' : textColor,
           }}
         >
-          {selected && (
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2D6A4F' }} />
-          )}
+          {icon}
         </div>
-        <p className="font-semibold text-sm" style={{ color: '#0f1f2e' }}>
-          {title}
-        </p>
+        <div className="flex-1 min-w-0 pt-0.5">
+          <div className="flex items-center gap-2 mb-1">
+            <p className="font-bold text-base" style={{ color: '#0f1f2e' }}>
+              {title}
+            </p>
+            {selected && (
+              <div
+                className="w-4 h-4 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: accentColor }}
+              >
+                <Check size={10} color="white" strokeWidth={4} />
+              </div>
+            )}
+          </div>
+          <p className="text-xs" style={{ color: '#5a7080' }}>
+            {subtitle}
+          </p>
+        </div>
       </div>
-      <p className="text-xs ml-6" style={{ color: '#5a7080' }}>
-        {subtitle}
-      </p>
     </button>
   )
 }

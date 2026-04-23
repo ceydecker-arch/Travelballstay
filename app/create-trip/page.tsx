@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { US_STATES, SPORTS } from '@/lib/states'
-import { Copy, Check } from 'lucide-react'
+import { Copy, Check, MapPin } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 
 function generateInviteCode() {
@@ -139,15 +139,56 @@ export default function CreateTripPage() {
   }
   const labelStyle: React.CSSProperties = {
     color: '#0f1f2e',
+    fontWeight: 600,
+  }
+  const focusStyles = {
+    onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = '#2D6A4F'
+      e.target.style.boxShadow = '0 0 0 3px rgba(45,106,79,0.15)'
+    },
+    onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = '#dde8ee'
+      e.target.style.boxShadow = 'none'
+    },
   }
 
+  const sectionHeader = (label: string) => (
+    <h3
+      className="text-xs font-bold uppercase tracking-widest mb-4 mt-2"
+      style={{ color: '#2D6A4F' }}
+    >
+      {label}
+    </h3>
+  )
+
+  const steps = [
+    { num: 1, title: 'Fill out your trip details', text: 'Tournament, location, and dates.' },
+    { num: 2, title: 'Share your invite code with families', text: 'Send the 6-character code to your team.' },
+    { num: 3, title: 'Everyone joins and marks their stay', text: 'See who booked and who still needs to.' },
+  ]
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+    <div className="min-h-screen relative" style={{ backgroundColor: '#f5f8fa' }}>
+      {/* Amber accent bar */}
+      <div
+        className="absolute top-0 left-0 right-0 z-20"
+        style={{
+          height: '4px',
+          background: 'linear-gradient(to right, #2D6A4F, #f59e0b, #2D6A4F)',
+        }}
+      />
+
       <Navbar />
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ color: '#0f1f2e' }}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+        <div className="text-center mb-10">
+          <p
+            className="text-xs font-bold uppercase tracking-widest mb-2"
+            style={{ color: '#f59e0b' }}
+          >
+            Trip Planner
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2" style={{ color: '#0f1f2e' }}>
             Create a Team Trip
           </h1>
           <p className="text-base" style={{ color: '#5a7080' }}>
@@ -155,190 +196,280 @@ export default function CreateTripPage() {
           </p>
         </div>
 
-        <div
-          className="bg-white rounded-2xl border p-6 sm:p-8"
-          style={{ borderColor: '#dde8ee' }}
-        >
-          {/* Invite code box */}
-          <div
-            className="rounded-xl px-4 py-4 mb-6 flex items-center justify-between"
-            style={{ backgroundColor: '#e8f5ee', border: '1px solid #bfe5cf' }}
-          >
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#2D6A4F' }}>
-                Your invite code
-              </p>
-              <p className="text-2xl font-bold tracking-[0.2em]" style={{ color: '#0f1f2e' }}>
-                {inviteCode}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-              style={{ backgroundColor: '#2D6A4F', color: 'white' }}
-            >
-              {copied ? <Check size={14} /> : <Copy size={14} />}
-              {copied ? 'Copied' : 'Copy'}
-            </button>
-          </div>
-
-          {error && (
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-6">
+          {/* Left column — Form (60%) */}
+          <div className="lg:col-span-3">
             <div
-              className="rounded-xl px-4 py-3 mb-4 text-sm"
+              className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm"
               style={{
-                backgroundColor: '#fef2f2',
-                color: '#dc2626',
-                border: '1px solid #fecaca',
+                borderTop: '4px solid #2D6A4F',
+                border: '1px solid #dde8ee',
+                borderTopWidth: '4px',
+                borderTopColor: '#2D6A4F',
               }}
             >
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Trip name *
-              </label>
-              <input
-                type="text"
-                value={tripName}
-                onChange={(e) => setTripName(e.target.value)}
-                placeholder="e.g. Cooperstown 2025 — 12U Tigers"
-                required
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Sport *
-              </label>
-              <select
-                value={sport}
-                onChange={(e) => setSport(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none bg-white"
-                style={inputStyle}
+              {/* Prominent invite code box */}
+              <div
+                className="rounded-xl p-5 mb-8 relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, #0f1f2e 0%, #1a2d3d 100%)',
+                }}
               >
-                {SPORTS.map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Tournament / venue name *
-              </label>
-              <input
-                type="text"
-                value={tournamentName}
-                onChange={(e) => setTournamentName(e.target.value)}
-                placeholder="e.g. Cooperstown Dreams Park"
-                required
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  City *
-                </label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="Cooperstown"
-                  required
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                  onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
+                <div
+                  className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20"
+                  style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
                 />
+                <div className="relative z-10 flex items-center justify-between gap-4">
+                  <div className="min-w-0">
+                    <p
+                      className="text-xs font-bold uppercase tracking-widest mb-2"
+                      style={{ color: '#f59e0b' }}
+                    >
+                      Your Team Invite Code
+                    </p>
+                    <p
+                      className="text-3xl font-extrabold tracking-[0.2em] text-white font-mono truncate"
+                    >
+                      {inviteCode}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-bold transition-all hover:opacity-90 flex-shrink-0"
+                    style={{ backgroundColor: '#f59e0b', color: '#0f1f2e' }}
+                  >
+                    {copied ? <Check size={16} strokeWidth={3} /> : <Copy size={16} strokeWidth={2.5} />}
+                    {copied ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  State *
-                </label>
-                <select
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none bg-white"
-                  style={inputStyle}
+
+              {error && (
+                <div
+                  className="rounded-xl px-4 py-3 mb-4 text-sm"
+                  style={{
+                    backgroundColor: '#fef2f2',
+                    color: '#dc2626',
+                    border: '1px solid #fecaca',
+                  }}
                 >
-                  <option value="">Select a state</option>
-                  {US_STATES.map((s) => (
-                    <option key={s.code} value={s.code}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+                  {error}
+                </div>
+              )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  Start date *
-                </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none"
-                  style={inputStyle}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                  End date *
-                </label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border text-sm outline-none"
-                  style={inputStyle}
-                />
-              </div>
-            </div>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {sectionHeader('Trip Details')}
+                <div>
+                  <label className="block text-sm mb-1.5" style={labelStyle}>
+                    Trip name *
+                  </label>
+                  <input
+                    type="text"
+                    value={tripName}
+                    onChange={(e) => setTripName(e.target.value)}
+                    placeholder="e.g. Cooperstown 2026 — 12U Tigers"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1.5" style={labelStyle}>
-                Notes (optional)
-              </label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={4}
-                placeholder="Any notes for your team..."
-                className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all resize-y"
-                style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
-                onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
-              />
-            </div>
+                <div>
+                  <label className="block text-sm mb-1.5" style={labelStyle}>
+                    Sport *
+                  </label>
+                  <select
+                    value={sport}
+                    onChange={(e) => setSport(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none bg-white transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  >
+                    {SPORTS.map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 rounded-xl text-base font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#2D6A4F' }}
+                <div>
+                  <label className="block text-sm mb-1.5" style={labelStyle}>
+                    Tournament / venue name *
+                  </label>
+                  <input
+                    type="text"
+                    value={tournamentName}
+                    onChange={(e) => setTournamentName(e.target.value)}
+                    placeholder="e.g. Cooperstown Dreams Park"
+                    required
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+
+                <div className="pt-2">{sectionHeader('Location & Dates')}</div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm mb-1.5" style={labelStyle}>
+                      City *
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Cooperstown"
+                      required
+                      className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                      style={inputStyle}
+                      {...focusStyles}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-1.5" style={labelStyle}>
+                      State *
+                    </label>
+                    <select
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border text-sm outline-none bg-white transition-all"
+                      style={inputStyle}
+                      {...focusStyles}
+                    >
+                      <option value="">Select a state</option>
+                      {US_STATES.map((s) => (
+                        <option key={s.code} value={s.code}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm mb-1.5" style={labelStyle}>
+                      Start date *
+                    </label>
+                    <input
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                      style={inputStyle}
+                      {...focusStyles}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-1.5" style={labelStyle}>
+                      End date *
+                    </label>
+                    <input
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      required
+                      className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
+                      style={inputStyle}
+                      {...focusStyles}
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2">{sectionHeader('Additional Info')}</div>
+
+                <div>
+                  <label className="block text-sm mb-1.5" style={labelStyle}>
+                    Notes (optional)
+                  </label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={4}
+                    placeholder="Any notes for your team..."
+                    className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all resize-y"
+                    style={inputStyle}
+                    {...focusStyles}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full py-4 rounded-xl text-base font-bold text-white transition-all duration-150 hover:-translate-y-px disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{
+                    background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
+                    boxShadow: '0 4px 14px rgba(45,106,79,0.4)',
+                  }}
+                >
+                  {submitting ? 'Creating trip...' : 'Create Trip & Get Invite Code →'}
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Right column — Info panel (40%) */}
+          <div className="lg:col-span-2">
+            <div
+              className="rounded-2xl p-6 sm:p-7 sticky top-6 relative overflow-hidden"
+              style={{ backgroundColor: '#0f1f2e' }}
             >
-              {submitting ? 'Creating trip...' : 'Create Trip'}
-            </button>
-          </form>
+              <div
+                className="absolute -top-16 -right-16 w-60 h-60 rounded-full opacity-15"
+                style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
+              />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-5">
+                  <MapPin size={20} style={{ color: '#f59e0b' }} />
+                  <h3 className="text-xl font-bold text-white">How it works</h3>
+                </div>
+
+                <div className="space-y-5 mb-6">
+                  {steps.map((step) => (
+                    <div key={step.num} className="flex gap-4">
+                      <div
+                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm"
+                        style={{
+                          backgroundColor: '#f59e0b',
+                          color: '#0f1f2e',
+                        }}
+                      >
+                        {step.num}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-white mb-0.5">
+                          {step.title}
+                        </p>
+                        <p
+                          className="text-xs leading-relaxed"
+                          style={{ color: 'rgba(255,255,255,0.6)' }}
+                        >
+                          {step.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Amber bordered call-out */}
+                <div
+                  className="rounded-xl p-4"
+                  style={{
+                    border: '1px solid rgba(245,158,11,0.4)',
+                    backgroundColor: 'rgba(245,158,11,0.08)',
+                  }}
+                >
+                  <p className="text-sm leading-relaxed text-white">
+                    Your whole team will be able to see where everyone is staying on the team map.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

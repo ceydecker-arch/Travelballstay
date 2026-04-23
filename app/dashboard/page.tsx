@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
-import { MapPin, Plus, Calendar, Users, ChevronRight } from 'lucide-react'
+import { MapPin, Plus, Calendar, Users, ChevronRight, Trophy, Search } from 'lucide-react'
 
 interface Trip {
   id: string
@@ -29,6 +29,24 @@ function formatDateRange(start: string | null, end: string | null) {
   return fmt((start || end) as string)
 }
 
+function extractSport(notes: string | null): string | null {
+  if (!notes) return null
+  const match = notes.match(/Sport:\s*([^\n]+)/i)
+  return match?.[1]?.trim() || null
+}
+
+function extractLocation(notes: string | null): string | null {
+  if (!notes) return null
+  const match = notes.match(/Location:\s*([^\n]+)/i)
+  return match?.[1]?.trim() || null
+}
+
+function extractTournament(notes: string | null): string | null {
+  if (!notes) return null
+  const match = notes.match(/Tournament:\s*([^\n]+)/i)
+  return match?.[1]?.trim() || null
+}
+
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
   const [trips, setTrips] = useState<Trip[]>([])
@@ -46,7 +64,6 @@ export default function DashboardPage() {
       }
       setUser(user)
 
-      // RLS ensures we only get trips the user is a member of or created
       const { data, error } = await supabase
         .from('trips')
         .select(`
@@ -87,6 +104,12 @@ export default function DashboardPage() {
     load()
   }, [])
 
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = '/'
+  }
+
   if (loading) {
     return (
       <div
@@ -101,67 +124,135 @@ export default function DashboardPage() {
     )
   }
 
+  const displayName =
+    user?.user_metadata?.full_name?.split(' ')[0] ||
+    user?.user_metadata?.full_name ||
+    user?.email?.split('@')[0] ||
+    'there'
+
+  const fullName = user?.user_metadata?.full_name || user?.email || 'Welcome'
+
   return (
-    <div
-      className="min-h-screen"
-      style={{ backgroundColor: '#f5f8fa' }}
-    >
-      {/* Header */}
+    <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+      {/* Top header bar — dark navy with amber bottom border */}
       <div
-        className="bg-white border-b px-4 py-4"
-        style={{ borderColor: '#dde8ee' }}
+        className="relative"
+        style={{
+          backgroundColor: '#0f1f2e',
+          borderBottom: '2px solid #f59e0b',
+        }}
       >
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+          <a href="/" className="flex items-center gap-2.5">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              className="w-9 h-9 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: '#2D6A4F' }}
             >
-              <MapPin size={16} color="white" strokeWidth={2.5} />
+              <MapPin size={18} color="white" strokeWidth={2.5} />
             </div>
-            <span
-              className="text-lg font-bold"
-              style={{ color: '#2D6A4F' }}
-            >
-              TravelBallStay
+            <span className="text-xl font-extrabold tracking-tight">
+              <span style={{ color: 'white' }}>Travel</span>
+              <span style={{ color: '#2D6A4F' }}>Ball</span>
+              <span style={{ color: '#f59e0b' }}>Stay</span>
             </span>
           </a>
+
           <div className="flex items-center gap-3">
             <span
-              className="text-sm"
-              style={{ color: '#5a7080' }}
+              className="hidden sm:inline text-sm"
+              style={{ color: 'rgba(255,255,255,0.7)' }}
             >
-              {user?.user_metadata?.full_name || user?.email}
+              {fullName}
             </span>
+            <button
+              onClick={handleSignOut}
+              className="text-xs font-semibold px-3 py-2 rounded-lg transition-colors hidden sm:inline-block"
+              style={{
+                color: 'rgba(255,255,255,0.6)',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+            >
+              Sign out
+            </button>
+            <a
+              href="/create-trip"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-px"
+              style={{
+                background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
+                boxShadow: '0 4px 14px rgba(45,106,79,0.4)',
+              }}
+            >
+              <Plus size={16} />
+              <span className="hidden sm:inline">Create a Trip</span>
+              <span className="sm:hidden">New</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Welcome section */}
+      <div className="bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <p className="text-sm mb-1" style={{ color: '#8fa3b2' }}>
+              Good to have you,
+            </p>
+            <h1
+              className="text-3xl sm:text-4xl font-extrabold tracking-tight"
+              style={{ color: '#0f1f2e' }}
+            >
+              {displayName}
+            </h1>
+            <div
+              className="mt-3"
+              style={{
+                width: '40px',
+                height: '3px',
+                backgroundColor: '#f59e0b',
+                borderRadius: '2px',
+              }}
+            />
+          </div>
+
+          {/* Stats card */}
+          <div
+            className="rounded-2xl px-6 py-4 flex items-center gap-4"
+            style={{
+              backgroundColor: '#f5f8fa',
+              border: '1px solid #dde8ee',
+            }}
+          >
+            <div className="text-center">
+              <p
+                className="text-3xl font-extrabold leading-none"
+                style={{ color: '#2D6A4F' }}
+              >
+                {trips.length}
+              </p>
+              <p
+                className="text-xs mt-1 uppercase tracking-widest"
+                style={{ color: '#8fa3b2' }}
+              >
+                My Trips
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="max-w-5xl mx-auto px-4 py-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1
-              className="text-2xl font-bold"
-              style={{ color: '#0f1f2e' }}
-            >
-              My Trips
-            </h1>
-            <p
-              className="text-sm mt-1"
-              style={{ color: '#5a7080' }}
-            >
-              Manage your tournament trips and team stays
-            </p>
-          </div>
-          <a
-            href="/create-trip"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: '#2D6A4F' }}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Section title */}
+        <div
+          className="mb-6"
+          style={{ borderLeft: '3px solid #f59e0b', paddingLeft: '12px' }}
+        >
+          <h2
+            className="text-xl font-bold"
+            style={{ color: '#0f1f2e' }}
           >
-            <Plus size={16} />
-            Create a Trip
-          </a>
+            My Tournament Trips
+          </h2>
         </div>
 
         {error && (
@@ -178,55 +269,70 @@ export default function DashboardPage() {
         )}
 
         {trips.length === 0 ? (
-          /* Empty state */
+          /* Navy empty state */
           <div
-            className="rounded-2xl border-2 border-dashed p-12 text-center"
-            style={{ borderColor: '#dde8ee' }}
+            className="rounded-2xl p-12 text-center relative overflow-hidden mb-10"
+            style={{ backgroundColor: '#0f1f2e' }}
           >
             <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: '#e8f5ee' }}
-            >
-              <MapPin size={28} style={{ color: '#2D6A4F' }} />
+              className="absolute -top-24 -right-24 w-80 h-80 rounded-full opacity-10"
+              style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
+            />
+            <div className="relative z-10">
+              <div
+                className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
+                style={{ backgroundColor: 'rgba(245,158,11,0.15)' }}
+              >
+                <MapPin size={36} style={{ color: '#f59e0b' }} strokeWidth={2} />
+              </div>
+              <h3 className="text-2xl font-bold mb-2 text-white">No trips yet</h3>
+              <p
+                className="text-base mb-8 max-w-md mx-auto"
+                style={{ color: 'rgba(255,255,255,0.65)' }}
+              >
+                Create your first team trip and invite your families to join. Everyone stays together.
+              </p>
+              <a
+                href="/create-trip"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-px"
+                style={{
+                  backgroundColor: '#f59e0b',
+                  color: '#0f1f2e',
+                  boxShadow: '0 4px 14px rgba(245,158,11,0.35)',
+                }}
+              >
+                <Plus size={16} strokeWidth={2.5} />
+                Create Your First Trip →
+              </a>
             </div>
-            <h3
-              className="text-lg font-bold mb-2"
-              style={{ color: '#0f1f2e' }}
-            >
-              No trips yet
-            </h3>
-            <p
-              className="text-sm mb-6 max-w-sm mx-auto"
-              style={{ color: '#5a7080' }}
-            >
-              Create your first team trip and invite your
-              families to join. Everyone stays together.
-            </p>
-            <a
-              href="/create-trip"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ backgroundColor: '#2D6A4F' }}
-            >
-              <Plus size={16} />
-              Create your first trip
-            </a>
           </div>
         ) : (
-          /* Trip list */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          /* Trip cards */
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
             {trips.map((trip) => {
               const dateRange = formatDateRange(trip.start_date, trip.end_date)
+              const sport = extractSport(trip.notes)
+              const noteTournament = extractTournament(trip.notes)
+              const noteLocation = extractLocation(trip.notes)
+              const tournamentName = trip.tournament?.name || noteTournament
+              const locationLine = trip.venue
+                ? `${trip.venue.name} · ${trip.venue.city}, ${trip.venue.state}`
+                : noteLocation
               return (
                 <a
                   key={trip.id}
                   href={`/trips/${trip.id}`}
                   className="group block rounded-2xl bg-white p-6 no-underline transition-all duration-200 hover:-translate-y-1"
                   style={{
+                    borderLeft: '4px solid #2D6A4F',
                     border: '1px solid #dde8ee',
+                    borderLeftWidth: '4px',
+                    borderLeftColor: '#2D6A4F',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
                   }}
                 >
-                  <div className="flex items-start justify-between mb-4">
+                  {/* Top row: name + sport tag */}
+                  <div className="flex items-start justify-between gap-3 mb-4">
                     <div className="min-w-0 flex-1">
                       <h3
                         className="text-lg font-bold mb-1 truncate"
@@ -234,26 +340,34 @@ export default function DashboardPage() {
                       >
                         {trip.name}
                       </h3>
-                      {trip.tournament?.name && (
-                        <p className="text-sm truncate" style={{ color: '#2D6A4F', fontWeight: 600 }}>
-                          {trip.tournament.name}
+                      {tournamentName && (
+                        <p
+                          className="text-sm font-semibold truncate"
+                          style={{ color: '#2D6A4F' }}
+                        >
+                          {tournamentName}
                         </p>
                       )}
                     </div>
-                    <ChevronRight
-                      size={20}
-                      className="flex-shrink-0 transition-transform group-hover:translate-x-1"
-                      style={{ color: '#8fa3b2' }}
-                    />
+                    {sport && (
+                      <span
+                        className="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide flex-shrink-0"
+                        style={{
+                          backgroundColor: '#fef3c7',
+                          color: '#f59e0b',
+                        }}
+                      >
+                        {sport}
+                      </span>
+                    )}
                   </div>
 
-                  <div className="space-y-2 mb-4">
-                    {trip.venue && (
+                  {/* Details */}
+                  <div className="space-y-2 mb-5">
+                    {locationLine && (
                       <div className="flex items-center gap-2 text-sm" style={{ color: '#5a7080' }}>
                         <MapPin size={14} style={{ color: '#8fa3b2' }} />
-                        <span className="truncate">
-                          {trip.venue.name} · {trip.venue.city}, {trip.venue.state}
-                        </span>
+                        <span className="truncate">{locationLine}</span>
                       </div>
                     )}
                     {dateRange && (
@@ -270,18 +384,26 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
+                  {/* Bottom row: code + CTA */}
                   <div
-                    className="pt-4 flex items-center justify-between text-xs"
-                    style={{ borderTop: '1px solid #f0f4f6', color: '#8fa3b2' }}
+                    className="pt-4 flex items-center justify-between gap-3"
+                    style={{ borderTop: '1px solid #f0f4f6' }}
                   >
-                    <span>
-                      Code: <span className="font-mono font-semibold" style={{ color: '#0f1f2e' }}>{trip.invite_code}</span>
+                    <span
+                      className="text-xs font-mono font-bold px-3 py-1.5 rounded-lg"
+                      style={{
+                        backgroundColor: '#e8f5ee',
+                        color: '#2D6A4F',
+                      }}
+                    >
+                      Code: {trip.invite_code}
                     </span>
                     <span
-                      className="font-semibold"
+                      className="text-sm font-bold inline-flex items-center gap-1 transition-transform group-hover:translate-x-1"
                       style={{ color: '#2D6A4F' }}
                     >
-                      View trip →
+                      View Trip
+                      <ChevronRight size={16} />
                     </span>
                   </div>
                 </a>
@@ -289,6 +411,114 @@ export default function DashboardPage() {
             })}
           </div>
         )}
+
+        {/* Quick actions row */}
+        <div
+          className="mb-6"
+          style={{ borderLeft: '3px solid #f59e0b', paddingLeft: '12px' }}
+        >
+          <h2 className="text-xl font-bold" style={{ color: '#0f1f2e' }}>
+            Quick Actions
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <a
+            href="/tournaments"
+            className="group block rounded-2xl bg-white p-5 no-underline transition-all duration-200 hover:-translate-y-1"
+            style={{
+              border: '1px solid #dde8ee',
+              borderTop: '3px solid #2D6A4F',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            }}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                  style={{ backgroundColor: '#e8f5ee' }}
+                >
+                  <Search size={20} style={{ color: '#2D6A4F' }} />
+                </div>
+                <h3 className="text-base font-bold" style={{ color: '#0f1f2e' }}>
+                  Find Tournaments
+                </h3>
+                <p className="text-xs mt-1" style={{ color: '#5a7080' }}>
+                  Search 65+ events nationwide
+                </p>
+              </div>
+              <ChevronRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+                style={{ color: '#8fa3b2' }}
+              />
+            </div>
+          </a>
+
+          <a
+            href="/create-trip"
+            className="group block rounded-2xl bg-white p-5 no-underline transition-all duration-200 hover:-translate-y-1"
+            style={{
+              border: '1px solid #dde8ee',
+              borderTop: '3px solid #f59e0b',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            }}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                  style={{ backgroundColor: '#fef3c7' }}
+                >
+                  <Plus size={20} style={{ color: '#f59e0b' }} />
+                </div>
+                <h3 className="text-base font-bold" style={{ color: '#0f1f2e' }}>
+                  Create a Trip
+                </h3>
+                <p className="text-xs mt-1" style={{ color: '#5a7080' }}>
+                  Organize your team&apos;s stay
+                </p>
+              </div>
+              <ChevronRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+                style={{ color: '#8fa3b2' }}
+              />
+            </div>
+          </a>
+
+          <a
+            href="/tournaments"
+            className="group block rounded-2xl bg-white p-5 no-underline transition-all duration-200 hover:-translate-y-1"
+            style={{
+              border: '1px solid #dde8ee',
+              borderTop: '3px solid #0f1f2e',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            }}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+                  style={{ backgroundColor: 'rgba(15,31,46,0.08)' }}
+                >
+                  <Trophy size={20} style={{ color: '#0f1f2e' }} />
+                </div>
+                <h3 className="text-base font-bold" style={{ color: '#0f1f2e' }}>
+                  Browse Venues
+                </h3>
+                <p className="text-xs mt-1" style={{ color: '#5a7080' }}>
+                  28 complexes across 13 states
+                </p>
+              </div>
+              <ChevronRight
+                size={18}
+                className="transition-transform group-hover:translate-x-1"
+                style={{ color: '#8fa3b2' }}
+              />
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   )
