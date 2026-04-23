@@ -17,21 +17,12 @@ export default function EmailSignup() {
     <section className="py-16 lg:py-20" style={{ backgroundColor: '#1a7a4a' }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
-        {/* Social proof */}
-        <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 border"
-          style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.25)', color: 'white' }}
-        >
-          <span>🎉</span>
-          Join 2,400+ families already signed up
-        </div>
-
         <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">
-          Be the first to know when we launch.
+          Get Early Access — It&apos;s Free.
         </h2>
 
         <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.8)' }}>
-          Join thousands of travel sport families getting early access to TravelBallStay.
+          Be among the first families to plan smarter tournament weekends with TravelBallStay.
         </p>
 
         {!submitted ? (

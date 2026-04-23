@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'TravelBallStay — Tournament Travel, Finally Figured Out',
+  title: 'TravelBallStay — Where Teams Stay Together',
   description:
-    'Find hotels near the fields, see where your teammates are staying, and keep your whole team coordinated. Built for every youth travel sport.',
+    'Find hotels near the fields, coordinate with your team, and plan smarter tournament weekends. Built for every travel sport family.',
   keywords: 'travel baseball, youth sports travel, tournament hotels, team trip planning, travel ball',
   openGraph: {
     title: 'TravelBallStay — Tournament Travel, Finally Figured Out',
