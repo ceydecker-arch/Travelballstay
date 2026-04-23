@@ -65,32 +65,20 @@ export default function JoinTripPage() {
       setMemberCount(count || 0)
 
       if (user) {
-        // Check if already a member OR the trip creator
+        // Trip creator: skip the invite page entirely, send them home.
+        if ((tripData as Trip).created_by === user.id) {
+          window.location.href = `/trips/${tripData.id}`
+          return
+        }
+
+        // Already a member? Mark so the button click just navigates rather than re-inserts.
         const { data: existing } = await supabase
           .from('trip_members')
           .select('id')
           .eq('trip_id', tripData.id)
           .eq('profile_id', user.id)
           .maybeSingle()
-        const isCreator = (tripData as Trip).created_by === user.id
-
-        if (existing || isCreator) {
-          setAlreadyMember(true)
-          setLoading(false)
-          return
-        }
-
-        // Auto-join: user landed on invite link while logged in — add them.
-        const { error: joinErr } = await supabase.from('trip_members').insert({
-          trip_id: tripData.id,
-          profile_id: user.id,
-          role: 'member',
-        })
-        if (!joinErr) {
-          window.location.href = `/trips/${tripData.id}`
-          return
-        }
-        console.error('Auto-join failed:', joinErr)
+        if (existing) setAlreadyMember(true)
       }
 
       setLoading(false)
@@ -356,11 +344,7 @@ export default function JoinTripPage() {
                 boxShadow: '0 4px 20px rgba(245,158,11,0.5)',
               }}
             >
-              {alreadyMember
-                ? 'View This Trip →'
-                : joining
-                ? 'Joining...'
-                : 'Join This Trip →'}
+              {joining ? 'Joining...' : 'Join This Trip →'}
             </button>
             {!userId && !alreadyMember && (
               <p
