@@ -30,9 +30,9 @@ export default function QuickActions() {
           >
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-              style={{ backgroundColor: 'rgba(26,122,74,0.2)' }}
+              style={{ backgroundColor: 'rgba(45,106,79,0.2)' }}
             >
-              <Users size={28} color="#1a7a4a" strokeWidth={2} />
+              <Users size={28} color="#2D6A4F" strokeWidth={2} />
             </div>
             <h3 className="text-2xl font-bold text-white mb-3">
               Keep Your Entire Team Together
@@ -58,7 +58,7 @@ export default function QuickActions() {
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: '#1a7a4a' }}
+                    style={{ backgroundColor: '#2D6A4F' }}
                   />
                   {item}
                 </li>
@@ -72,7 +72,7 @@ export default function QuickActions() {
             </p>
             <div
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-150 group-hover:opacity-90"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               Create a Team Trip
               <span>→</span>
@@ -89,9 +89,9 @@ export default function QuickActions() {
           >
             <div
               className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-              style={{ backgroundColor: '#e6f7ee' }}
+              style={{ backgroundColor: '#e8f5ee' }}
             >
-              <Trophy size={28} color="#1a7a4a" strokeWidth={2} />
+              <Trophy size={28} color="#2D6A4F" strokeWidth={2} />
             </div>
             <h3
               className="text-2xl font-bold mb-3"
@@ -121,7 +121,7 @@ export default function QuickActions() {
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: '#1a7a4a' }}
+                    style={{ backgroundColor: '#2D6A4F' }}
                   />
                   {item}
                 </li>
@@ -130,8 +130,8 @@ export default function QuickActions() {
             <div
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-150 border-2 group-hover:bg-green-50"
               style={{
-                borderColor: '#1a7a4a',
-                color: '#1a7a4a',
+                borderColor: '#2D6A4F',
+                color: '#2D6A4F',
               }}
             >
               Explore Tournaments

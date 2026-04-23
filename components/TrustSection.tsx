@@ -8,9 +8,9 @@ export default function TrustSection() {
         <div
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 border"
           style={{
-            backgroundColor: '#e6f7ee',
-            borderColor: '#b8e8cf',
-            color: '#1a7a4a',
+            backgroundColor: '#e8f5ee',
+            borderColor: '#a8d5be',
+            color: '#2D6A4F',
           }}
         >
           Built for travel sport families
@@ -54,7 +54,7 @@ export default function TrustSection() {
             >
               <div
                 className="text-4xl font-bold mb-2"
-                style={{ color: '#1a7a4a' }}
+                style={{ color: '#2D6A4F' }}
               >
                 {stat.number}
               </div>

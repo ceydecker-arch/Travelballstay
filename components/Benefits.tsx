@@ -14,8 +14,8 @@ const benefits = [
     title: 'Stay Close to the Fields',
     description:
       'Cut down on driving and stress. Every search is anchored to your tournament facility so you are never stuck with a 45-minute drive to a 6am game.',
-    color: '#1a7a4a',
-    bg: '#e6f7ee',
+    color: '#2D6A4F',
+    bg: '#e8f5ee',
   },
   {
     icon: Clock,

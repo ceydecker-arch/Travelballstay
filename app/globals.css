@@ -5,10 +5,10 @@
 @tailwind utilities;
 
 :root {
-  --green-primary: #1a7a4a;
-  --green-mid: #25a863;
-  --green-light: #e6f7ee;
-  --green-dark: #15633c;
+  --green-primary: #2D6A4F;
+  --green-mid: #3a8c64;
+  --green-light: #e8f5ee;
+  --green-dark: #1f4d38;
   --amber: #f59e0b;
   --amber-light: #fef3c7;
   --navy: #0f1f2e;
@@ -39,7 +39,7 @@ body {
   .btn-primary:hover {
     background-color: var(--green-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(26, 122, 74, 0.3);
+    box-shadow: 0 4px 16px rgba(45, 106, 79, 0.3);
   }
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold border-2 transition-all duration-150;
@@ -105,6 +105,6 @@ body {
 }
 
 .how-it-works-cta:hover {
-  background-color: #15633c !important;
+  background-color: #1f4d38 !important;
   transform: translateY(-1px);
 }

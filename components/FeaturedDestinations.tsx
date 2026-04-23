@@ -43,7 +43,7 @@ export default function FeaturedDestinations() {
           <div className="text-center mb-12">
             <p
               className="text-sm font-semibold uppercase tracking-widest mb-3"
-              style={{ color: '#1a7a4a' }}
+              style={{ color: '#2D6A4F' }}
             >
               Find your next tournament
             </p>
@@ -79,7 +79,7 @@ export default function FeaturedDestinations() {
         <div className="text-center mb-12">
           <p
             className="text-sm font-semibold uppercase tracking-widest mb-3"
-            style={{ color: '#1a7a4a' }}
+            style={{ color: '#2D6A4F' }}
           >
             Find your next tournament
           </p>

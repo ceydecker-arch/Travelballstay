@@ -95,7 +95,7 @@ export default function DashboardPage() {
       >
         <div
           className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-          style={{ borderColor: '#1a7a4a' }}
+          style={{ borderColor: '#2D6A4F' }}
         />
       </div>
     )
@@ -115,13 +115,13 @@ export default function DashboardPage() {
           <a href="/" className="flex items-center gap-2">
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               <MapPin size={16} color="white" strokeWidth={2.5} />
             </div>
             <span
               className="text-lg font-bold"
-              style={{ color: '#1a7a4a' }}
+              style={{ color: '#2D6A4F' }}
             >
               TravelBallStay
             </span>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
           <a
             href="/create-trip"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: '#1a7a4a' }}
+            style={{ backgroundColor: '#2D6A4F' }}
           >
             <Plus size={16} />
             Create a Trip
@@ -185,9 +185,9 @@ export default function DashboardPage() {
           >
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: '#e6f7ee' }}
+              style={{ backgroundColor: '#e8f5ee' }}
             >
-              <MapPin size={28} style={{ color: '#1a7a4a' }} />
+              <MapPin size={28} style={{ color: '#2D6A4F' }} />
             </div>
             <h3
               className="text-lg font-bold mb-2"
@@ -205,7 +205,7 @@ export default function DashboardPage() {
             <a
               href="/create-trip"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               <Plus size={16} />
               Create your first trip
@@ -235,7 +235,7 @@ export default function DashboardPage() {
                         {trip.name}
                       </h3>
                       {trip.tournament?.name && (
-                        <p className="text-sm truncate" style={{ color: '#1a7a4a', fontWeight: 600 }}>
+                        <p className="text-sm truncate" style={{ color: '#2D6A4F', fontWeight: 600 }}>
                           {trip.tournament.name}
                         </p>
                       )}
@@ -279,7 +279,7 @@ export default function DashboardPage() {
                     </span>
                     <span
                       className="font-semibold"
-                      style={{ color: '#1a7a4a' }}
+                      style={{ color: '#2D6A4F' }}
                     >
                       View trip →
                     </span>

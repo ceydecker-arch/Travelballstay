@@ -21,7 +21,7 @@ export default function FinalCTA() {
           <a
             href="/create-trip"
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: '#1a7a4a' }}
+            style={{ backgroundColor: '#2D6A4F' }}
           >
             Create a Team Trip →
           </a>

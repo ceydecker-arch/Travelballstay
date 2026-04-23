@@ -110,7 +110,7 @@ export default function JoinTripPage() {
         <div className="flex items-center justify-center py-24">
           <div
             className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: '#1a7a4a' }}
+            style={{ borderColor: '#2D6A4F' }}
           />
         </div>
       </div>
@@ -135,7 +135,7 @@ export default function JoinTripPage() {
             <a
               href="/"
               className="inline-block px-5 py-3 rounded-xl text-sm font-semibold text-white"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               Back home
             </a>
@@ -155,7 +155,7 @@ export default function JoinTripPage() {
         >
           <p
             className="text-xs font-semibold uppercase tracking-widest mb-2"
-            style={{ color: '#1a7a4a' }}
+            style={{ color: '#2D6A4F' }}
           >
             You've been invited
           </p>
@@ -205,7 +205,7 @@ export default function JoinTripPage() {
             onClick={handleJoin}
             disabled={joining}
             className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#1a7a4a' }}
+            style={{ backgroundColor: '#2D6A4F' }}
           >
             {!userId
               ? 'Sign up to join'
@@ -222,7 +222,7 @@ export default function JoinTripPage() {
               <a
                 href={`/signin?redirect=/join/${code}`}
                 className="font-semibold"
-                style={{ color: '#1a7a4a' }}
+                style={{ color: '#2D6A4F' }}
               >
                 Sign in
               </a>

@@ -164,7 +164,7 @@ export default function MarkStayPage() {
         <div className="flex items-center justify-center py-24">
           <div
             className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: '#1a7a4a' }}
+            style={{ borderColor: '#2D6A4F' }}
           />
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function MarkStayPage() {
         <div className="mb-8">
           <p
             className="text-xs font-semibold uppercase tracking-widest mb-2"
-            style={{ color: '#1a7a4a' }}
+            style={{ color: '#2D6A4F' }}
           >
             {tripName}
           </p>
@@ -227,7 +227,7 @@ export default function MarkStayPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -244,7 +244,7 @@ export default function MarkStayPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -307,7 +307,7 @@ export default function MarkStayPage() {
                 placeholder="Any details your team should know..."
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all resize-y"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -316,7 +316,7 @@ export default function MarkStayPage() {
               type="submit"
               disabled={submitting}
               className="w-full py-3.5 rounded-xl text-base font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               {submitting
                 ? 'Saving...'
@@ -348,19 +348,19 @@ function RadioCard({
       onClick={onClick}
       className="text-left p-4 rounded-xl border-2 transition-all"
       style={{
-        borderColor: selected ? '#1a7a4a' : '#dde8ee',
-        backgroundColor: selected ? '#e6f7ee' : 'white',
+        borderColor: selected ? '#2D6A4F' : '#dde8ee',
+        backgroundColor: selected ? '#e8f5ee' : 'white',
       }}
     >
       <div className="flex items-center gap-2 mb-1">
         <div
           className="w-4 h-4 rounded-full border-2 flex items-center justify-center"
           style={{
-            borderColor: selected ? '#1a7a4a' : '#dde8ee',
+            borderColor: selected ? '#2D6A4F' : '#dde8ee',
           }}
         >
           {selected && (
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#1a7a4a' }} />
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#2D6A4F' }} />
           )}
         </div>
         <p className="font-semibold text-sm" style={{ color: '#0f1f2e' }}>

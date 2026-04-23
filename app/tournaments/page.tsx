@@ -195,7 +195,7 @@ export default function TournamentsPage() {
               placeholder="Search by name or city..."
               className="w-full pl-11 pr-4 py-3 rounded-xl border text-sm outline-none transition-all"
               style={{ borderColor: '#dde8ee', color: '#0f1f2e' }}
-              onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+              onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
               onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
             />
           </div>
@@ -226,7 +226,7 @@ export default function TournamentsPage() {
           <button
             type="button"
             className="px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: '#1a7a4a' }}
+            style={{ backgroundColor: '#2D6A4F' }}
           >
             Search
           </button>
@@ -279,8 +279,8 @@ export default function TournamentsPage() {
                     <span
                       className="self-start text-xs font-semibold px-2.5 py-1 rounded-full mb-3"
                       style={{
-                        backgroundColor: '#e6f7ee',
-                        color: '#1a7a4a',
+                        backgroundColor: '#e8f5ee',
+                        color: '#2D6A4F',
                       }}
                     >
                       {r.sport}
@@ -311,7 +311,7 @@ export default function TournamentsPage() {
                   <a
                     href="#"
                     className="mt-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 self-start"
-                    style={{ backgroundColor: '#1a7a4a' }}
+                    style={{ backgroundColor: '#2D6A4F' }}
                   >
                     View Stays →
                   </a>

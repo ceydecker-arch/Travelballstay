@@ -10,10 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         green: {
-          primary: '#1a7a4a',
-          light: '#e6f7ee',
-          mid: '#25a863',
-          dark: '#15633c',
+          primary: '#2D6A4F',
+          light: '#e8f5ee',
+          mid: '#3a8c64',
+          dark: '#1f4d38',
         },
         amber: {
           accent: '#f59e0b',

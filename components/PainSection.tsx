@@ -62,8 +62,8 @@ export default function PainSection() {
           <div
             className="inline-block rounded-2xl px-8 py-5"
             style={{
-              backgroundColor: 'rgba(26,122,74,0.15)',
-              border: '1px solid rgba(26,122,74,0.3)',
+              backgroundColor: 'rgba(45,106,79,0.15)',
+              border: '1px solid rgba(45,106,79,0.3)',
             }}
           >
             <p className="text-xl sm:text-2xl font-bold text-white">

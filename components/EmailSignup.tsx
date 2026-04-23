@@ -14,7 +14,7 @@ export default function EmailSignup() {
   }
 
   return (
-    <section className="py-16 lg:py-20" style={{ backgroundColor: '#1a7a4a' }}>
+    <section className="py-16 lg:py-20" style={{ backgroundColor: '#2D6A4F' }}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
         <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-4">

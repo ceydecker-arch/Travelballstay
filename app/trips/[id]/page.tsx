@@ -124,7 +124,7 @@ export default function TripDetailPage() {
         <div className="flex items-center justify-center py-24">
           <div
             className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: '#1a7a4a' }}
+            style={{ borderColor: '#2D6A4F' }}
           />
         </div>
       </div>
@@ -182,7 +182,7 @@ export default function TripDetailPage() {
                 type="button"
                 onClick={copyCode}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-                style={{ backgroundColor: '#1a7a4a', color: 'white' }}
+                style={{ backgroundColor: '#2D6A4F', color: 'white' }}
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? 'Copied' : 'Copy'}
@@ -250,8 +250,8 @@ function TabButton({
       onClick={onClick}
       className="px-4 py-2.5 text-sm font-semibold transition-colors -mb-px border-b-2"
       style={{
-        color: active ? '#1a7a4a' : '#5a7080',
-        borderColor: active ? '#1a7a4a' : 'transparent',
+        color: active ? '#2D6A4F' : '#5a7080',
+        borderColor: active ? '#2D6A4F' : 'transparent',
       }}
     >
       {children}
@@ -289,8 +289,8 @@ function TeamTab({ members }: { members: MemberRow[] }) {
           <span
             className="text-xs font-semibold px-2.5 py-1 rounded-full"
             style={{
-              backgroundColor: m.role === 'organizer' ? '#fef3c7' : '#e6f7ee',
-              color: m.role === 'organizer' ? '#92400e' : '#1a7a4a',
+              backgroundColor: m.role === 'organizer' ? '#fef3c7' : '#e8f5ee',
+              color: m.role === 'organizer' ? '#92400e' : '#2D6A4F',
             }}
           >
             {m.role === 'organizer' ? 'Organizer' : 'Member'}
@@ -308,7 +308,7 @@ function StaysTab({ stays, tripId }: { stays: StayRow[]; tripId: string }) {
         <a
           href={`/trips/${tripId}/mark-stay`}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
-          style={{ backgroundColor: '#1a7a4a' }}
+          style={{ backgroundColor: '#2D6A4F' }}
         >
           Mark your stay
         </a>
@@ -344,8 +344,8 @@ function StaysTab({ stays, tripId }: { stays: StayRow[]; tripId: string }) {
               <span
                 className="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
                 style={{
-                  backgroundColor: s.booking_status === 'booked' ? '#e6f7ee' : '#fff7ed',
-                  color: s.booking_status === 'booked' ? '#1a7a4a' : '#c2410c',
+                  backgroundColor: s.booking_status === 'booked' ? '#e8f5ee' : '#fff7ed',
+                  color: s.booking_status === 'booked' ? '#2D6A4F' : '#c2410c',
                 }}
               >
                 {s.booking_status === 'booked' ? 'Booked' : 'Interested'}
@@ -362,7 +362,7 @@ function MapPlaceholder() {
   return (
     <div
       className="rounded-2xl p-10 text-center"
-      style={{ backgroundColor: '#1a7a4a', color: 'white' }}
+      style={{ backgroundColor: '#2D6A4F', color: 'white' }}
     >
       <div
         className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"

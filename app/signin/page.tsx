@@ -39,13 +39,13 @@ export default function SignInPage() {
         <a href="/" className="flex items-center justify-center gap-2 mb-8">
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ backgroundColor: '#1a7a4a' }}
+            style={{ backgroundColor: '#2D6A4F' }}
           >
             <MapPin size={20} color="white" strokeWidth={2.5} />
           </div>
           <span
             className="text-2xl font-bold"
-            style={{ color: '#1a7a4a' }}
+            style={{ color: '#2D6A4F' }}
           >
             TravelBallStay
           </span>
@@ -95,7 +95,7 @@ export default function SignInPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={{ borderColor: '#dde8ee', color: '#0f1f2e' }}
-                onFocus={(e) => e.target.style.borderColor = '#1a7a4a'}
+                onFocus={(e) => e.target.style.borderColor = '#2D6A4F'}
                 onBlur={(e) => e.target.style.borderColor = '#dde8ee'}
               />
             </div>
@@ -111,7 +111,7 @@ export default function SignInPage() {
                 <a
                   href="/forgot-password"
                   className="text-xs font-medium"
-                  style={{ color: '#1a7a4a' }}
+                  style={{ color: '#2D6A4F' }}
                 >
                   Forgot password?
                 </a>
@@ -124,7 +124,7 @@ export default function SignInPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={{ borderColor: '#dde8ee', color: '#0f1f2e' }}
-                onFocus={(e) => e.target.style.borderColor = '#1a7a4a'}
+                onFocus={(e) => e.target.style.borderColor = '#2D6A4F'}
                 onBlur={(e) => e.target.style.borderColor = '#dde8ee'}
               />
             </div>
@@ -133,7 +133,7 @@ export default function SignInPage() {
               type="submit"
               disabled={loading}
               className="w-full py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
@@ -147,7 +147,7 @@ export default function SignInPage() {
             <a
               href="/signup"
               className="font-semibold"
-              style={{ color: '#1a7a4a' }}
+              style={{ color: '#2D6A4F' }}
             >
               Sign up free
             </a>

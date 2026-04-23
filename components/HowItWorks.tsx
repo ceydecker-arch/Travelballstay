@@ -36,7 +36,7 @@ export default function HowItWorks() {
           <div
             className="hidden lg:block absolute top-10 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-px"
             style={{
-              backgroundImage: 'repeating-linear-gradient(to right, #1a7a4a 0, #1a7a4a 8px, transparent 8px, transparent 20px)',
+              backgroundImage: 'repeating-linear-gradient(to right, #2D6A4F 0, #2D6A4F 8px, transparent 8px, transparent 20px)',
               opacity: 0.3,
             }}
             aria-hidden="true"
@@ -49,13 +49,13 @@ export default function HowItWorks() {
                   <div className="relative mb-6">
                     <div
                       className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-sm"
-                      style={{ backgroundColor: '#e6f7ee', border: '1px solid #b8e8cf' }}
+                      style={{ backgroundColor: '#e8f5ee', border: '1px solid #a8d5be' }}
                     >
-                      <Icon size={32} style={{ color: '#1a7a4a' }} strokeWidth={1.5} />
+                      <Icon size={32} style={{ color: '#2D6A4F' }} strokeWidth={1.5} />
                     </div>
                     <span
                       className="absolute -top-3 -right-3 w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center text-white shadow"
-                      style={{ backgroundColor: '#1a7a4a' }}
+                      style={{ backgroundColor: '#2D6A4F' }}
                     >
                       {index + 1}
                     </span>
@@ -76,7 +76,7 @@ export default function HowItWorks() {
         </div>
         <p
           className="text-center text-sm font-medium mt-10"
-          style={{ color: '#1a7a4a' }}
+          style={{ color: '#2D6A4F' }}
         >
           Tournament season fills up fast.
           Lock in your team stay early.

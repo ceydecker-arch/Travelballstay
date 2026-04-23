@@ -47,8 +47,8 @@ export default function Navbar() {
             <div
               className="w-8 h-8 md:w-[38px] md:h-[38px] rounded-[10px] flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
               style={{
-                background: 'linear-gradient(135deg, #1a7a4a 0%, #25a863 100%)',
-                boxShadow: '0 2px 8px rgba(26,122,74,0.4)',
+                background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
+                boxShadow: '0 2px 8px rgba(45,106,79,0.4)',
               }}
             >
               <MapPin
@@ -62,7 +62,7 @@ export default function Navbar() {
               style={{ fontWeight: 800 }}
             >
               <span style={{ color: '#0f1f2e' }}>Travel</span>
-              <span style={{ color: '#1a7a4a' }}>Ball</span>
+              <span style={{ color: '#2D6A4F' }}>Ball</span>
               <span style={{ color: '#f59e0b' }}>Stay</span>
             </span>
           </a>
@@ -88,7 +88,7 @@ export default function Navbar() {
                 <a
                   href="/dashboard"
                   className="text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-150 hover:bg-green-50"
-                  style={{ color: '#1a7a4a' }}
+                  style={{ color: '#2D6A4F' }}
                 >
                   My Trips
                 </a>
@@ -105,14 +105,14 @@ export default function Navbar() {
                 <a
                   href="/signin"
                   className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50"
-                  style={{ color: '#1a7a4a' }}
+                  style={{ color: '#2D6A4F' }}
                 >
                   Sign In
                 </a>
                 <a
                   href="/signup"
                   className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90"
-                  style={{ backgroundColor: '#1a7a4a' }}
+                  style={{ backgroundColor: '#2D6A4F' }}
                 >
                   Get Started
                 </a>
@@ -150,7 +150,7 @@ export default function Navbar() {
                 <a
                   href="/dashboard"
                   className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 transition-colors"
-                  style={{ color: '#1a7a4a' }}
+                  style={{ color: '#2D6A4F' }}
                 >
                   My Trips
                 </a>
@@ -172,7 +172,7 @@ export default function Navbar() {
                 <a
                   href="/signup"
                   className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg text-white transition-colors"
-                  style={{ backgroundColor: '#1a7a4a' }}
+                  style={{ backgroundColor: '#2D6A4F' }}
                 >
                   Get Started
                 </a>

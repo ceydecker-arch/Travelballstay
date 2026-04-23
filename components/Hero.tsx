@@ -149,9 +149,9 @@ export default function Hero() {
                   boxShadow: '0 0 24px rgba(255,255,255,0.25)',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#1a7a4a'
+                  e.target.style.borderColor = '#2D6A4F'
                   e.target.style.boxShadow =
-                    '0 0 0 3px rgba(26,122,74,0.25), 0 0 24px rgba(255,255,255,0.25)'
+                    '0 0 0 3px rgba(45,106,79,0.25), 0 0 24px rgba(255,255,255,0.25)'
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = '#dde8ee'
@@ -162,7 +162,7 @@ export default function Hero() {
             <button
               type="button"
               className="flex-shrink-0 px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               Search
             </button>
@@ -173,7 +173,7 @@ export default function Hero() {
             <a
               href="/tournaments"
               className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               Explore Tournaments
             </a>

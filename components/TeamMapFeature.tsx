@@ -26,7 +26,7 @@ export default function TeamMapFeature() {
             {/* Label pill */}
             <div
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-5 border"
-              style={{ backgroundColor: '#e6f7ee', borderColor: '#b8e8cf', color: '#1a7a4a' }}
+              style={{ backgroundColor: '#e8f5ee', borderColor: '#a8d5be', color: '#2D6A4F' }}
             >
               <span className="text-base">📍</span>
               The Team Map
@@ -52,9 +52,9 @@ export default function TeamMapFeature() {
                 <li key={benefit} className="flex items-center gap-3">
                   <div
                     className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: '#e6f7ee' }}
+                    style={{ backgroundColor: '#e8f5ee' }}
                   >
-                    <Check size={12} style={{ color: '#1a7a4a' }} strokeWidth={3} />
+                    <Check size={12} style={{ color: '#2D6A4F' }} strokeWidth={3} />
                   </div>
                   <span className="text-base font-medium" style={{ color: '#0f1f2e' }}>
                     {benefit}
@@ -66,7 +66,7 @@ export default function TeamMapFeature() {
             <a
               href="/create-trip"
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               See how it works
               <span>→</span>
@@ -108,13 +108,13 @@ export default function TeamMapFeature() {
               >
                 <div
                   className="px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-lg mb-1 whitespace-nowrap"
-                  style={{ backgroundColor: '#1a7a4a' }}
+                  style={{ backgroundColor: '#2D6A4F' }}
                 >
                   🏟️ Tournament Fields
                 </div>
                 <div
                   className="w-5 h-5 rounded-full border-2 border-white shadow-lg"
-                  style={{ backgroundColor: '#1a7a4a' }}
+                  style={{ backgroundColor: '#2D6A4F' }}
                 />
               </div>
 
@@ -161,7 +161,7 @@ export default function TeamMapFeature() {
                     <span className="text-xs" style={{ color: '#5a7080' }}>Interested (2)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#1a7a4a' }} />
+                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#2D6A4F' }} />
                     <span className="text-xs" style={{ color: '#5a7080' }}>Fields</span>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ export default function TeamMapFeature() {
                 className="absolute top-4 right-4 bg-white rounded-xl px-3 py-2 shadow-md border text-center"
                 style={{ borderColor: '#dde8ee' }}
               >
-                <p className="text-lg font-bold" style={{ color: '#1a7a4a' }}>5/8</p>
+                <p className="text-lg font-bold" style={{ color: '#2D6A4F' }}>5/8</p>
                 <p className="text-xs" style={{ color: '#5a7080' }}>families placed</p>
               </div>
             </div>
@@ -182,7 +182,7 @@ export default function TeamMapFeature() {
               className="absolute -bottom-5 -right-4 bg-white rounded-xl px-4 py-3 shadow-lg border hidden lg:block"
               style={{ borderColor: '#dde8ee' }}
             >
-              <p className="text-xs font-semibold" style={{ color: '#1a7a4a' }}>
+              <p className="text-xs font-semibold" style={{ color: '#2D6A4F' }}>
                 ✓ Johnson family just booked!
               </p>
               <p className="text-xs mt-0.5" style={{ color: '#8fa3b2' }}>

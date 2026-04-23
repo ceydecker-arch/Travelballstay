@@ -127,7 +127,7 @@ export default function CreateTripPage() {
       >
         <div
           className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-          style={{ borderColor: '#1a7a4a' }}
+          style={{ borderColor: '#2D6A4F' }}
         />
       </div>
     )
@@ -162,10 +162,10 @@ export default function CreateTripPage() {
           {/* Invite code box */}
           <div
             className="rounded-xl px-4 py-4 mb-6 flex items-center justify-between"
-            style={{ backgroundColor: '#e6f7ee', border: '1px solid #bfe5cf' }}
+            style={{ backgroundColor: '#e8f5ee', border: '1px solid #bfe5cf' }}
           >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#1a7a4a' }}>
+              <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#2D6A4F' }}>
                 Your invite code
               </p>
               <p className="text-2xl font-bold tracking-[0.2em]" style={{ color: '#0f1f2e' }}>
@@ -176,7 +176,7 @@ export default function CreateTripPage() {
               type="button"
               onClick={handleCopy}
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-              style={{ backgroundColor: '#1a7a4a', color: 'white' }}
+              style={{ backgroundColor: '#2D6A4F', color: 'white' }}
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
               {copied ? 'Copied' : 'Copy'}
@@ -209,7 +209,7 @@ export default function CreateTripPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -242,7 +242,7 @@ export default function CreateTripPage() {
                 required
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -260,7 +260,7 @@ export default function CreateTripPage() {
                   required
                   className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all"
                   style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                  onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                   onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
                 />
               </div>
@@ -325,7 +325,7 @@ export default function CreateTripPage() {
                 placeholder="Any notes for your team..."
                 className="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all resize-y"
                 style={inputStyle}
-                onFocus={(e) => (e.target.style.borderColor = '#1a7a4a')}
+                onFocus={(e) => (e.target.style.borderColor = '#2D6A4F')}
                 onBlur={(e) => (e.target.style.borderColor = '#dde8ee')}
               />
             </div>
@@ -334,7 +334,7 @@ export default function CreateTripPage() {
               type="submit"
               disabled={submitting}
               className="w-full py-3.5 rounded-xl text-base font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ backgroundColor: '#1a7a4a' }}
+              style={{ backgroundColor: '#2D6A4F' }}
             >
               {submitting ? 'Creating trip...' : 'Create Trip'}
             </button>
