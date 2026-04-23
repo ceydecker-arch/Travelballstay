@@ -64,7 +64,7 @@ export default function TeamMapFeature() {
             </ul>
 
             <a
-              href="#team-trips"
+              href="/create-trip"
               className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#1a7a4a' }}
             >

@@ -19,14 +19,14 @@ export default function FinalCTA() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#team-trips"
+            href="/create-trip"
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
             style={{ backgroundColor: '#1a7a4a' }}
           >
             Create a Team Trip →
           </a>
           <a
-            href="#tournaments"
+            href="/tournaments"
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold border-2 transition-all duration-150 hover:bg-white hover:text-gray-900 active:scale-95"
             style={{
               borderColor: 'rgba(255,255,255,0.3)',

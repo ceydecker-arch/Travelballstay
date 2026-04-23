@@ -101,7 +101,7 @@ export default function FeaturedDestinations() {
           {venues.map((venue) => (
             <a
               key={venue.id}
-              href="#"
+              href="/tournaments"
               className="group block no-underline rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-2"
               style={{
                 background: venue.gradient,
@@ -195,7 +195,7 @@ export default function FeaturedDestinations() {
         </div>
         <div className="text-center">
           <a
-            href="#tournaments"
+            href="/tournaments"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-150 hover:opacity-90"
             style={{ backgroundColor: '#0f1f2e' }}
           >

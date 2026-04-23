@@ -5,10 +5,10 @@ import { Menu, X, MapPin } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 
 const navLinks = [
-  { label: 'Tournaments', href: '#tournaments' },
-  { label: 'Venues', href: '#venues' },
-  { label: 'Hotels', href: '#hotels' },
-  { label: 'Team Trips', href: '#team-trips' },
+  { label: 'Tournaments', href: '/tournaments' },
+  { label: 'Venues', href: '/tournaments' },
+  { label: 'Hotels', href: '/tournaments' },
+  { label: 'Team Trips', href: '/dashboard' },
 ]
 
 export default function Navbar() {

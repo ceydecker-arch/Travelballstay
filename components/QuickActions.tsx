@@ -21,7 +21,7 @@ export default function QuickActions() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1 — Create a Team Trip (featured) */}
           <a
-            href="#team-trips"
+            href="/create-trip"
             className="group relative rounded-2xl p-8 overflow-hidden no-underline block transition-all duration-200 hover:-translate-y-1"
             style={{
               backgroundColor: '#0f1f2e',
@@ -80,7 +80,7 @@ export default function QuickActions() {
           </a>
           {/* Card 2 — Explore Tournaments */}
           <a
-            href="#tournaments"
+            href="/tournaments"
             className="group relative rounded-2xl p-8 overflow-hidden no-underline block transition-all duration-200 hover:-translate-y-1"
             style={{
               backgroundColor: '#f5f8fa',

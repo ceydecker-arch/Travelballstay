@@ -171,14 +171,14 @@ export default function Hero() {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="#tournaments"
+              href="/tournaments"
               className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#1a7a4a' }}
             >
               Explore Tournaments
             </a>
             <a
-              href="#team-trips"
+              href="/create-trip"
               className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-semibold border-2 transition-all duration-150 active:scale-95 text-white"
               style={{
                 borderColor: '#ffffff',
