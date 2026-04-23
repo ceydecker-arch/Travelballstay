@@ -42,30 +42,93 @@ export default function Hero() {
             together — without the stress.
           </p>
 
-          {/* Sport indicators — single clean line */}
+          {/* Sport indicators — clean uppercase amber */}
           <div
             className="w-full text-center mb-10"
-            style={{ letterSpacing: '0.05em' }}
           >
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>⚾</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Baseball</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🥎</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Softball</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>⚽</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Soccer</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🏀</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Basketball</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🏐</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Volleyball</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>📣</span>
-            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Cheer</span>
-            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
-            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>+ More Sports</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Baseball
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Softball
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Soccer
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Basketball
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Volleyball
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              Cheer
+            </span>
+            <span style={{ color: '#f59e0b', margin: '0 10px', opacity: 0.5, fontSize: '11px' }}>·</span>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                letterSpacing: '0.18em',
+                color: '#f59e0b',
+                textTransform: 'uppercase',
+              }}
+            >
+              + More
+            </span>
           </div>
 
           {/* Search bar */}
