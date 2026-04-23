@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase'
 interface Venue {
   id: string
   name: string
@@ -19,6 +19,7 @@ export default function FeaturedDestinations() {
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     async function fetchVenues() {
+      const supabase = createClient()
       const { data, error } = await supabase
         .from('venues')
         .select('*')

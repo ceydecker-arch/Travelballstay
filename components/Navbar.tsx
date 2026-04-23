@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Menu, X, MapPin } from 'lucide-react'
+import { createClient } from '@/lib/supabase'
 
 const navLinks = [
   { label: 'Tournaments', href: '#tournaments' },
@@ -12,6 +13,29 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    window.location.href = '/'
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
@@ -59,20 +83,41 @@ export default function Navbar() {
 
           {/* Desktop CTA buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <a
-              href="#signin"
-              className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50"
-              style={{ color: '#1a7a4a' }}
-            >
-              Sign In
-            </a>
-            <a
-              href="#signup"
-              className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90"
-              style={{ backgroundColor: '#1a7a4a' }}
-            >
-              Get Started
-            </a>
+            {user ? (
+              <>
+                <a
+                  href="/dashboard"
+                  className="text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-150 hover:bg-green-50"
+                  style={{ color: '#1a7a4a' }}
+                >
+                  My Trips
+                </a>
+                <button
+                  onClick={handleSignOut}
+                  className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:bg-gray-50"
+                  style={{ color: '#4a5e6d' }}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/signin"
+                  className="text-sm font-semibold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:border-green-300 hover:bg-green-50"
+                  style={{ color: '#1a7a4a' }}
+                >
+                  Sign In
+                </a>
+                <a
+                  href="/signup"
+                  className="text-sm font-semibold px-4 py-2 rounded-lg text-white transition-all duration-150 hover:opacity-90"
+                  style={{ backgroundColor: '#1a7a4a' }}
+                >
+                  Get Started
+                </a>
+              </>
+            )}
           </div>
 
           {/* Mobile hamburger */}
@@ -100,19 +145,39 @@ export default function Navbar() {
             </a>
           ))}
           <div className="pt-3 flex flex-col gap-2 border-t border-gray-100 mt-2">
-            <a
-              href="#signin"
-              className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Sign In
-            </a>
-            <a
-              href="#signup"
-              className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg text-white transition-colors"
-              style={{ backgroundColor: '#1a7a4a' }}
-            >
-              Get Started
-            </a>
+            {user ? (
+              <>
+                <a
+                  href="/dashboard"
+                  className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 transition-colors"
+                  style={{ color: '#1a7a4a' }}
+                >
+                  My Trips
+                </a>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <a
+                  href="/signin"
+                  className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Sign In
+                </a>
+                <a
+                  href="/signup"
+                  className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg text-white transition-colors"
+                  style={{ backgroundColor: '#1a7a4a' }}
+                >
+                  Get Started
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}
