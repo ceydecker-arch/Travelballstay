@@ -47,11 +47,29 @@ function extractTournament(notes: string | null): string | null {
   return match?.[1]?.trim() || null
 }
 
+const GREETINGS = [
+  'Huddle up,',
+  'Back in the dugout,',
+  'Game face on,',
+  "Let's rally the team,",
+  'Ready for the next road trip,',
+  'Tournament-bound,',
+  'Welcome back to the lineup,',
+  'Pack the car,',
+  'Bases loaded,',
+  'First pitch is calling,',
+]
+
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
   const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [greeting, setGreeting] = useState(GREETINGS[0])
+
+  useEffect(() => {
+    setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)])
+  }, [])
 
   useEffect(() => {
     const supabase = createClient()
@@ -194,8 +212,11 @@ export default function DashboardPage() {
       <div className="bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <p className="text-sm mb-1" style={{ color: '#8fa3b2' }}>
-              Good to have you,
+            <p
+              className="text-sm font-semibold uppercase tracking-widest mb-2"
+              style={{ color: '#f59e0b' }}
+            >
+              {greeting}
             </p>
             <h1
               className="text-3xl sm:text-4xl font-extrabold tracking-tight"
