@@ -42,44 +42,71 @@ export default function Hero() {
             together — without the stress.
           </p>
 
-          {/* Sport tiles */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+          {/* Sport indicators — single clean line */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 mb-10">
             {[
-              { icon: '⚾', label: 'Baseball', color: '#1a7a4a', bg: 'rgba(26,122,74,0.25)', border: 'rgba(26,122,74,0.5)' },
-              { icon: '🥎', label: 'Softball', color: '#ec4899', bg: 'rgba(236,72,153,0.25)', border: 'rgba(236,72,153,0.5)' },
-              { icon: '⚽', label: 'Soccer', color: '#2a7fc4', bg: 'rgba(42,127,196,0.25)', border: 'rgba(42,127,196,0.5)' },
-              { icon: '🏀', label: 'Basketball', color: '#f97316', bg: 'rgba(249,115,22,0.25)', border: 'rgba(249,115,22,0.5)' },
-              { icon: '🏐', label: 'Volleyball', color: '#9333ea', bg: 'rgba(147,51,234,0.25)', border: 'rgba(147,51,234,0.5)' },
-              { icon: '📣', label: 'Cheer', color: '#f59e0b', bg: 'rgba(245,158,11,0.25)', border: 'rgba(245,158,11,0.5)' },
-              { icon: '➕', label: 'More', color: 'rgba(255,255,255,0.6)', bg: 'rgba(255,255,255,0.08)', border: 'rgba(255,255,255,0.2)' },
-            ].map((sport) => (
+              { icon: '⚾', label: 'Baseball' },
+              { icon: '🥎', label: 'Softball' },
+              { icon: '⚽', label: 'Soccer' },
+              { icon: '🏀', label: 'Basketball' },
+              { icon: '🏐', label: 'Volleyball' },
+              { icon: '📣', label: 'Cheer' },
+            ].map((sport, index, arr) => (
               <div
                 key={sport.label}
-                className="flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 hover:scale-110"
-                style={{
-                  width: '72px',
-                  height: '72px',
-                  borderRadius: '16px',
-                  backgroundColor: sport.bg,
-                  border: `1px solid ${sport.border}`,
-                  backdropFilter: 'blur(8px)',
-                }}
+                className="flex items-center gap-2"
               >
-                <span style={{ fontSize: '24px', lineHeight: 1 }}>{sport.icon}</span>
                 <span
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: 600,
-                    color: 'white',
-                    letterSpacing: '0.03em',
-                    textAlign: 'center',
-                    lineHeight: 1.2,
-                  }}
+                  className="flex items-center gap-1.5"
                 >
-                  {sport.label}
+                  <span style={{ fontSize: '14px' }}>
+                    {sport.icon}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      color: 'rgba(255,255,255,0.7)',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {sport.label}
+                  </span>
                 </span>
+                {index < arr.length - 1 && (
+                  <span
+                    style={{
+                      color: '#f59e0b',
+                      fontSize: '12px',
+                      opacity: 0.6,
+                    }}
+                  >
+                    ·
+                  </span>
+                )}
               </div>
             ))}
+            <div className="flex items-center gap-2">
+              <span
+                style={{
+                  color: '#f59e0b',
+                  fontSize: '12px',
+                  opacity: 0.6,
+                }}
+              >
+                ·
+              </span>
+              <span
+                style={{
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#f59e0b',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                + More Sports
+              </span>
+            </div>
           </div>
 
           {/* Search bar */}
