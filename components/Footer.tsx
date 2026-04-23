@@ -83,7 +83,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            © 2025 TravelBallStay. Built for travel sport families.
+            © 2026 TravelBallStay. Built for travel sport families.
           </p>
         </div>
       </div>
