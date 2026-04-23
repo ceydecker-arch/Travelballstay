@@ -43,70 +43,29 @@ export default function Hero() {
           </p>
 
           {/* Sport indicators — single clean line */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 mb-10">
-            {[
-              { icon: '⚾', label: 'Baseball' },
-              { icon: '🥎', label: 'Softball' },
-              { icon: '⚽', label: 'Soccer' },
-              { icon: '🏀', label: 'Basketball' },
-              { icon: '🏐', label: 'Volleyball' },
-              { icon: '📣', label: 'Cheer' },
-            ].map((sport, index, arr) => (
-              <div
-                key={sport.label}
-                className="flex items-center gap-2"
-              >
-                <span
-                  className="flex items-center gap-1.5"
-                >
-                  <span style={{ fontSize: '14px' }}>
-                    {sport.icon}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: 'rgba(255,255,255,0.7)',
-                      letterSpacing: '0.04em',
-                    }}
-                  >
-                    {sport.label}
-                  </span>
-                </span>
-                {index < arr.length - 1 && (
-                  <span
-                    style={{
-                      color: '#f59e0b',
-                      fontSize: '12px',
-                      opacity: 0.6,
-                    }}
-                  >
-                    ·
-                  </span>
-                )}
-              </div>
-            ))}
-            <div className="flex items-center gap-2">
-              <span
-                style={{
-                  color: '#f59e0b',
-                  fontSize: '12px',
-                  opacity: 0.6,
-                }}
-              >
-                ·
-              </span>
-              <span
-                style={{
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#f59e0b',
-                  letterSpacing: '0.04em',
-                }}
-              >
-                + More Sports
-              </span>
-            </div>
+          <div
+            className="w-full text-center mb-10"
+            style={{ letterSpacing: '0.05em' }}
+          >
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>⚾</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Baseball</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🥎</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Softball</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>⚽</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Soccer</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🏀</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Basketball</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>🏐</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Volleyball</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>📣</span>
+            <span style={{ fontSize: '15px', color: 'white', fontWeight: 500, margin: '0 6px' }}>Cheer</span>
+            <span style={{ fontSize: '13px', color: '#f59e0b', margin: '0 4px' }}>·</span>
+            <span style={{ fontSize: '15px', color: '#f59e0b', fontWeight: 600 }}>+ More Sports</span>
           </div>
 
           {/* Search bar */}
