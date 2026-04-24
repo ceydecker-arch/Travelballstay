@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { MapPin, Plus, Calendar, Users, ChevronRight, Trophy, Search } from 'lucide-react'
+import { TripCardSkeleton, Skeleton } from '@/components/Skeleton'
 
 interface Trip {
   id: string
@@ -154,14 +155,49 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: '#f5f8fa' }}
-      >
+      <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+        {/* Dark header placeholder to match real page */}
         <div
-          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-          style={{ borderColor: '#2D6A4F' }}
-        />
+          className="relative"
+          style={{
+            backgroundColor: '#0f1f2e',
+            borderBottom: '2px solid #f59e0b',
+          }}
+        >
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: '#2D6A4F' }}
+              >
+                <MapPin size={18} color="white" strokeWidth={2.5} />
+              </div>
+              <span className="text-xl font-extrabold tracking-tight">
+                <span style={{ color: 'white' }}>Travel</span>
+                <span style={{ color: '#2D6A4F' }}>Ball</span>
+                <span style={{ color: '#f59e0b' }}>Stay</span>
+              </span>
+            </div>
+            <Skeleton width={120} height={40} rounded={12} />
+          </div>
+        </div>
+
+        {/* Welcome placeholder */}
+        <div className="bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-3">
+            <Skeleton width={140} height={12} />
+            <Skeleton width={220} height={32} />
+          </div>
+        </div>
+
+        {/* Trip cards placeholder */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <Skeleton width={200} height={20} className="mb-6" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <TripCardSkeleton />
+            <TripCardSkeleton />
+          </div>
+        </div>
       </div>
     )
   }

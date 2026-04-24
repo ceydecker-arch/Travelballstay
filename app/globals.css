@@ -108,3 +108,12 @@ body {
   background-color: #1f4d38 !important;
   transform: translateY(-1px);
 }
+
+@keyframes tbs-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
