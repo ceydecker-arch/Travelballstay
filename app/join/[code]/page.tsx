@@ -43,11 +43,13 @@ export default function JoinTripPage() {
       const { data: { user } } = await supabase.auth.getUser()
       setUserId(user?.id ?? null)
 
-      const { data: tripData, error: tripErr } = await supabase
-        .from('trips')
-        .select('*')
-        .eq('invite_code', code)
-        .maybeSingle()
+      // Use a SECURITY DEFINER RPC so anonymous users and non-members can
+      // preview the trip (RLS on `trips` otherwise blocks this read).
+      const { data: tripRows, error: tripErr } = await supabase
+        .rpc('get_trip_by_invite', { _code: code })
+
+      const tripData =
+        Array.isArray(tripRows) && tripRows.length > 0 ? tripRows[0] : null
 
       if (tripErr || !tripData) {
         console.error('Trip lookup failed:', tripErr)
@@ -57,12 +59,7 @@ export default function JoinTripPage() {
       }
 
       setTrip(tripData as Trip)
-
-      const { count } = await supabase
-        .from('trip_members')
-        .select('id', { count: 'exact', head: true })
-        .eq('trip_id', tripData.id)
-      setMemberCount(count || 0)
+      setMemberCount(Number((tripData as any).member_count) || 0)
 
       if (user) {
         // Trip creator: skip the invite page entirely, send them home.
