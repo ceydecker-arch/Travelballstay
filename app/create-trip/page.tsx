@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { US_STATES, SPORTS } from '@/lib/states'
 import { Copy, Check, MapPin } from 'lucide-react'
@@ -15,7 +16,11 @@ function generateInviteCode() {
   return out
 }
 
-export default function CreateTripPage() {
+function CreateTripPageInner() {
+  const searchParams = useSearchParams()
+  const tournamentIdParam = searchParams.get('tournament')
+  const venueIdParam = searchParams.get('venue')
+
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [userId, setUserId] = useState<string | null>(null)
 
@@ -29,6 +34,11 @@ export default function CreateTripPage() {
   const [notes, setNotes] = useState('')
   const [inviteCode, setInviteCode] = useState('')
   const [copied, setCopied] = useState(false)
+
+  // FK IDs we'll save on the trip row if we have them
+  const [tournamentId, setTournamentId] = useState<string | null>(null)
+  const [venueId, setVenueId] = useState<string | null>(null)
+  const [prefillLabel, setPrefillLabel] = useState<string | null>(null)
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -45,6 +55,80 @@ export default function CreateTripPage() {
     })
     setInviteCode(generateInviteCode())
   }, [])
+
+  // Prefill form when ?tournament=<id> or ?venue=<id> is present
+  useEffect(() => {
+    async function prefillFromTournament(id: string) {
+      const supabase = createClient()
+      const { data, error: pfErr } = await supabase
+        .from('tournaments')
+        .select(
+          `id, name, sport, start_date, end_date,
+           tournament_venues(is_primary, venues(id, name, city, state))`
+        )
+        .eq('id', id)
+        .single()
+
+      if (pfErr || !data) {
+        console.error('Prefill tournament error:', pfErr)
+        return
+      }
+
+      const t: any = data
+      const primary =
+        (t.tournament_venues || []).find((tv: any) => tv.is_primary) ||
+        (t.tournament_venues || [])[0]
+      const venue = primary?.venues
+
+      setTournamentId(t.id)
+      if (venue?.id) setVenueId(venue.id)
+
+      setTournamentName(t.name || '')
+      if (t.sport && SPORTS.includes(t.sport)) setSport(t.sport)
+      if (t.start_date) setStartDate(t.start_date)
+      if (t.end_date) setEndDate(t.end_date)
+      if (venue?.city) setCity(venue.city)
+      if (venue?.state) setState(venue.state)
+
+      // Suggest a trip name the user can edit
+      const year = t.start_date ? new Date(t.start_date).getFullYear() : ''
+      setTripName(year ? `${t.name} ${year} — My Team` : `${t.name} — My Team`)
+      setPrefillLabel(`Prefilled from tournament: ${t.name}`)
+    }
+
+    async function prefillFromVenue(id: string) {
+      const supabase = createClient()
+      const { data, error: pfErr } = await supabase
+        .from('venues')
+        .select('id, name, city, state, sports')
+        .eq('id', id)
+        .single()
+
+      if (pfErr || !data) {
+        console.error('Prefill venue error:', pfErr)
+        return
+      }
+
+      setVenueId(data.id)
+      setTournamentName(data.name || '')
+      if (data.city) setCity(data.city)
+      if (data.state) setState(data.state)
+      if (data.sports && data.sports.length > 0) {
+        const match = SPORTS.find(
+          (s) => s.toLowerCase() === String(data.sports[0]).toLowerCase()
+        )
+        if (match) setSport(match)
+      }
+      setTripName(`${data.name} — My Team`)
+      setPrefillLabel(`Prefilled from venue: ${data.name}`)
+    }
+
+    if (tournamentIdParam) {
+      prefillFromTournament(tournamentIdParam)
+    } else if (venueIdParam) {
+      prefillFromVenue(venueIdParam)
+    }
+  }, [tournamentIdParam, venueIdParam])
 
   const handleCopy = async () => {
     try {
@@ -85,16 +169,21 @@ export default function CreateTripPage() {
       .filter(Boolean)
       .join('\n')
 
+    const insertPayload: Record<string, any> = {
+      name: tripName.trim(),
+      invite_code: inviteCode,
+      start_date: startDate,
+      end_date: endDate,
+      notes: notePayload,
+      created_by: userId,
+    }
+    // Only set FK columns when we have them so we don't clobber with null
+    if (tournamentId) insertPayload.tournament_id = tournamentId
+    if (venueId) insertPayload.venue_id = venueId
+
     const { data: trip, error: tripErr } = await supabase
       .from('trips')
-      .insert({
-        name: tripName.trim(),
-        invite_code: inviteCode,
-        start_date: startDate,
-        end_date: endDate,
-        notes: notePayload,
-        created_by: userId,
-      })
+      .insert(insertPayload)
       .select('id')
       .single()
 
@@ -244,6 +333,19 @@ export default function CreateTripPage() {
                   </button>
                 </div>
               </div>
+
+              {prefillLabel && (
+                <div
+                  className="rounded-xl px-4 py-3 mb-4 text-xs font-semibold"
+                  style={{
+                    backgroundColor: '#e8f5ee',
+                    color: '#1f4d38',
+                    border: '1px solid #a8d5be',
+                  }}
+                >
+                  {prefillLabel}
+                </div>
+              )}
 
               {error && (
                 <div
@@ -473,5 +575,25 @@ export default function CreateTripPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CreateTripPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          className="min-h-screen flex items-center justify-center"
+          style={{ backgroundColor: '#f5f8fa' }}
+        >
+          <div
+            className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
+            style={{ borderColor: '#2D6A4F' }}
+          />
+        </div>
+      }
+    >
+      <CreateTripPageInner />
+    </Suspense>
   )
 }

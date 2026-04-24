@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { US_STATES, SPORTS } from '@/lib/states'
 import { Search, MapPin, Calendar, Trophy } from 'lucide-react'
@@ -63,103 +63,148 @@ export default function TournamentsPage() {
   const [sport, setSport] = useState('All Sports')
   const [state, setState] = useState('All States')
 
+  // Track whether the zero-results is because of filters or an empty DB so we
+  // can show the venue fallback only in the "no filters yet" case.
+  const [usedVenueFallback, setUsedVenueFallback] = useState(false)
+
+  // Debounce the live refetch so we don't hammer Supabase on every keystroke.
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   useEffect(() => {
-    async function load() {
-      const supabase = createClient()
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      runSearch(query, sport, state)
+    }, 250)
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, sport, state])
 
-      const { data: tournaments, error: tErr } = await supabase
-        .from('tournaments')
-        .select(
-          'id, name, sport, start_date, end_date, tournament_venues(is_primary, venues(id, name, city, state))'
-        )
-        .order('start_date', { ascending: true })
-        .limit(50)
+  async function runSearch(q: string, sportFilter: string, stateFilter: string) {
+    setLoading(true)
+    const supabase = createClient()
 
-      if (tErr) {
-        console.error('Error fetching tournaments:', tErr)
-      }
+    const hasStateFilter = stateFilter !== 'All States'
+    const hasSportFilter = sportFilter !== 'All Sports'
+    const hasQuery = q.trim().length > 0
 
-      const tournamentResults: ResultCard[] = (
-        (tournaments as unknown as TournamentRow[]) || []
-      )
-        .map((t, i) => {
-          const primary =
-            t.tournament_venues?.find((tv) => tv.is_primary) ||
-            t.tournament_venues?.[0]
-          const venue = primary?.venues
-          const dates =
-            t.start_date && t.end_date
-              ? formatDateRange(t.start_date, t.end_date)
-              : t.start_date
-              ? formatDate(t.start_date)
-              : null
-          return {
-            id: t.id,
-            title: t.name,
-            subtitle: venue ? `${venue.name}` : 'Venue TBD',
-            city: venue?.city || '',
-            state: venue?.state || '',
-            sport: t.sport,
-            dates,
-            source: 'tournament' as const,
-            gradient: BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
-          }
-        })
+    // Use inner join when filtering by state so the query can reach into
+    // tournament_venues.venues.state. Otherwise a plain left-join is fine.
+    const venueSelect = hasStateFilter
+      ? 'tournament_venues!inner(is_primary, venues!inner(id, name, city, state))'
+      : 'tournament_venues(is_primary, venues(id, name, city, state))'
 
-      if (tournamentResults.length > 0) {
-        setResults(tournamentResults)
-        setLoading(false)
-        return
-      }
+    let tq = supabase
+      .from('tournaments')
+      .select(`id, name, sport, start_date, end_date, ${venueSelect}`)
+      .order('start_date', { ascending: true })
+      .limit(200)
 
-      const { data: venues, error: vErr } = await supabase
-        .from('venues')
-        .select('*')
-        .limit(24)
-
-      if (vErr) {
-        console.error('Error fetching venues:', vErr)
-        setResults([])
-        setLoading(false)
-        return
-      }
-
-      const venueResults: ResultCard[] = ((venues as Venue[]) || []).map((v, i) => ({
-        id: v.id,
-        title: v.name,
-        subtitle: v.description || 'Tournament venue',
-        city: v.city,
-        state: v.state,
-        sport: v.sports && v.sports.length > 0 ? v.sports[0] : null,
-        dates: v.season,
-        source: 'venue' as const,
-        gradient: v.gradient || BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
-        badge: v.badge,
-      }))
-
-      setResults(venueResults)
-      setLoading(false)
+    if (hasSportFilter) {
+      // Sport values in DB may be stored with different casing; ilike is safer.
+      tq = tq.ilike('sport', `%${sportFilter}%`)
+    }
+    if (hasQuery) {
+      tq = tq.ilike('name', `%${q.trim()}%`)
+    }
+    if (hasStateFilter) {
+      tq = tq.eq('tournament_venues.venues.state', stateFilter)
     }
 
-    load()
-  }, [])
+    const { data: tournaments, error: tErr } = await tq
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return results.filter((r) => {
-      if (q && !r.title.toLowerCase().includes(q) && !r.city.toLowerCase().includes(q)) {
-        return false
-      }
-      if (sport !== 'All Sports') {
-        const rSport = (r.sport || '').toLowerCase()
-        if (!rSport.includes(sport.toLowerCase())) return false
-      }
-      if (state !== 'All States') {
-        if (r.state !== state) return false
-      }
-      return true
-    })
-  }, [results, query, sport, state])
+    if (tErr) {
+      console.error('Error fetching tournaments:', tErr)
+    }
+
+    const tournamentResults: ResultCard[] = (
+      (tournaments as unknown as TournamentRow[]) || []
+    )
+      // When a state filter is applied with !inner, tournaments without a
+      // matching venue are dropped; no extra client-side work needed. But keep
+      // a defensive check for rows with zero venues.
+      .filter((t) =>
+        hasStateFilter ? (t.tournament_venues?.length || 0) > 0 : true
+      )
+      .map((t, i) => {
+        const primary =
+          t.tournament_venues?.find((tv) => tv.is_primary) ||
+          t.tournament_venues?.[0]
+        const venue = primary?.venues
+        const dates =
+          t.start_date && t.end_date
+            ? formatDateRange(t.start_date, t.end_date)
+            : t.start_date
+            ? formatDate(t.start_date)
+            : null
+        return {
+          id: t.id,
+          title: t.name,
+          subtitle: venue ? `${venue.name}` : 'Venue TBD',
+          city: venue?.city || '',
+          state: venue?.state || '',
+          sport: t.sport,
+          dates,
+          source: 'tournament' as const,
+          gradient: BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
+        }
+      })
+
+    if (tournamentResults.length > 0) {
+      setResults(tournamentResults)
+      setUsedVenueFallback(false)
+      setLoading(false)
+      return
+    }
+
+    // Zero tournament results.
+    // If any filter is active, show the "no results, clear filters" empty
+    // state rather than silently swapping in a venue list.
+    if (hasQuery || hasSportFilter || hasStateFilter) {
+      setResults([])
+      setUsedVenueFallback(false)
+      setLoading(false)
+      return
+    }
+
+    // No filters, no tournaments — fall back to venues so the page isn't blank.
+    let vq = supabase.from('venues').select('*').limit(24)
+    if (hasStateFilter) vq = vq.eq('state', stateFilter)
+    const { data: venues, error: vErr } = await vq
+
+    if (vErr) {
+      console.error('Error fetching venues:', vErr)
+      setResults([])
+      setUsedVenueFallback(false)
+      setLoading(false)
+      return
+    }
+
+    const venueResults: ResultCard[] = ((venues as Venue[]) || []).map((v, i) => ({
+      id: v.id,
+      title: v.name,
+      subtitle: v.description || 'Tournament venue',
+      city: v.city,
+      state: v.state,
+      sport: v.sports && v.sports.length > 0 ? v.sports[0] : null,
+      dates: v.season,
+      source: 'venue' as const,
+      gradient: v.gradient || BRAND_GRADIENTS[i % BRAND_GRADIENTS.length],
+      badge: v.badge,
+    }))
+
+    setResults(venueResults)
+    setUsedVenueFallback(true)
+    setLoading(false)
+  }
+
+  const filterActive =
+    query.trim().length > 0 || sport !== 'All Sports' || state !== 'All States'
+
+  // Results already come filtered from the server; no additional client-side
+  // narrowing needed. Keeping a pass-through useMemo for future additions.
+  const filtered = useMemo(() => results, [results])
 
   const clearFilters = () => {
     setQuery('')
@@ -217,13 +262,14 @@ export default function TournamentsPage() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by tournament name or city..."
+                placeholder="Search by tournament name..."
                 className="w-full pl-11 pr-4 py-3 rounded-lg text-sm outline-none"
                 style={{ color: '#0f1f2e' }}
               />
             </div>
             <button
               type="button"
+              onClick={() => runSearch(query, sport, state)}
               className="px-6 py-3 rounded-lg text-sm font-bold text-white transition-all whitespace-nowrap"
               style={{
                 background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
@@ -283,7 +329,7 @@ export default function TournamentsPage() {
             className="text-xs font-bold uppercase tracking-widest"
             style={{ color: '#f59e0b' }}
           >
-            Tournament Results
+            {usedVenueFallback ? 'Featured Venues' : 'Tournament Results'}
           </p>
           {!loading && filtered.length > 0 && (
             <p className="text-sm" style={{ color: '#5a7080' }}>
@@ -318,24 +364,30 @@ export default function TournamentsPage() {
               >
                 <MapPin size={36} style={{ color: '#f59e0b' }} strokeWidth={2} />
               </div>
-              <h3 className="text-2xl font-bold mb-2 text-white">No tournaments found</h3>
+              <h3 className="text-2xl font-bold mb-2 text-white">
+                {filterActive ? 'No tournaments match those filters' : 'No tournaments found'}
+              </h3>
               <p
                 className="text-base mb-8 max-w-md mx-auto"
                 style={{ color: 'rgba(255,255,255,0.65)' }}
               >
-                Try a different search or browse all destinations below.
+                {filterActive
+                  ? 'Try clearing your filters or searching a broader area.'
+                  : 'Check back soon — new tournaments are added every week.'}
               </p>
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-px"
-                style={{
-                  background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
-                  boxShadow: '0 4px 14px rgba(45,106,79,0.4)',
-                }}
-              >
-                Browse All →
-              </button>
+              {filterActive && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-px"
+                  style={{
+                    background: 'linear-gradient(135deg, #2D6A4F 0%, #3a8c64 100%)',
+                    boxShadow: '0 4px 14px rgba(45,106,79,0.4)',
+                  }}
+                >
+                  Clear Filters
+                </button>
+              )}
             </div>
           </div>
         ) : (
@@ -343,7 +395,11 @@ export default function TournamentsPage() {
             {filtered.map((r) => (
               <a
                 key={r.id}
-                href="/create-trip"
+                href={
+                  r.source === 'tournament'
+                    ? `/create-trip?tournament=${r.id}`
+                    : `/create-trip?venue=${r.id}`
+                }
                 className="group block rounded-2xl overflow-hidden no-underline transition-all duration-300 hover:-translate-y-2"
                 style={{
                   background: r.gradient || BRAND_GRADIENTS[0],

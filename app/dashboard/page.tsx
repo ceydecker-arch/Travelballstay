@@ -66,9 +66,33 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [greeting, setGreeting] = useState(GREETINGS[0])
+  const [tournamentCount, setTournamentCount] = useState<number | null>(null)
+  const [venueCount, setVenueCount] = useState<number | null>(null)
+  const [venueStateCount, setVenueStateCount] = useState<number | null>(null)
 
   useEffect(() => {
     setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)])
+  }, [])
+
+  // Fetch live counts for the Quick Actions cards
+  useEffect(() => {
+    const supabase = createClient()
+    async function loadCounts() {
+      const [{ count: tCount }, { count: vCount }, { data: vStates }] = await Promise.all([
+        supabase.from('tournaments').select('*', { count: 'exact', head: true }),
+        supabase.from('venues').select('*', { count: 'exact', head: true }),
+        supabase.from('venues').select('state'),
+      ])
+      if (typeof tCount === 'number') setTournamentCount(tCount)
+      if (typeof vCount === 'number') setVenueCount(vCount)
+      if (Array.isArray(vStates)) {
+        const distinct = new Set(
+          vStates.map((r: any) => r?.state).filter((s: any) => !!s)
+        )
+        setVenueStateCount(distinct.size)
+      }
+    }
+    loadCounts()
   }, [])
 
   useEffect(() => {
@@ -465,7 +489,9 @@ export default function DashboardPage() {
                   Find Tournaments
                 </h3>
                 <p className="text-xs mt-1" style={{ color: '#5a7080' }}>
-                  Search 65+ events nationwide
+                  {tournamentCount !== null
+                    ? `Search ${tournamentCount}+ events nationwide`
+                    : 'Search events nationwide'}
                 </p>
               </div>
               <ChevronRight
@@ -529,7 +555,11 @@ export default function DashboardPage() {
                   Browse Venues
                 </h3>
                 <p className="text-xs mt-1" style={{ color: '#5a7080' }}>
-                  28 complexes across 13 states
+                  {venueCount !== null && venueStateCount !== null
+                    ? `${venueCount} complexes across ${venueStateCount} states`
+                    : venueCount !== null
+                    ? `${venueCount} complexes nationwide`
+                    : 'Browse complexes nationwide'}
                 </p>
               </div>
               <ChevronRight

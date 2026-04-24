@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
 import { MapPin, Users, Calendar, Trophy } from 'lucide-react'
@@ -36,10 +36,55 @@ export default function JoinTripPage() {
   const [error, setError] = useState('')
   const [notFound, setNotFound] = useState(false)
 
-  useEffect(() => {
-    async function load() {
-      const supabase = createClient()
+  // Guard so a late-arriving auth event doesn't trigger a second auto-join.
+  const autoJoinRanRef = useRef(false)
 
+  useEffect(() => {
+    const supabase = createClient()
+
+    // Insert the user into trip_members and send them to the trip page.
+    // If they're already a member (race / double-fire), just redirect.
+    async function performAutoJoin(tripData: Trip, uid: string) {
+      if (autoJoinRanRef.current) return
+      autoJoinRanRef.current = true
+
+      // Creator → straight to trip.
+      if (tripData.created_by === uid) {
+        window.location.href = `/trips/${tripData.id}`
+        return
+      }
+
+      // Already a member → straight to trip.
+      const { data: existing } = await supabase
+        .from('trip_members')
+        .select('id')
+        .eq('trip_id', tripData.id)
+        .eq('profile_id', uid)
+        .maybeSingle()
+      if (existing) {
+        window.location.href = `/trips/${tripData.id}`
+        return
+      }
+
+      // Otherwise, auto-add them as a member and redirect.
+      const { error: memberErr } = await supabase.from('trip_members').insert({
+        trip_id: tripData.id,
+        profile_id: uid,
+        role: 'member',
+      })
+      if (memberErr) {
+        console.error('Auto-join error:', memberErr)
+        // If the insert failed, fall back to showing the preview + button
+        // so the user can at least try manually. Release the guard.
+        autoJoinRanRef.current = false
+        setError('Could not join automatically. Tap the button below to try again.')
+        setAlreadyMember(false)
+        return
+      }
+      window.location.href = `/trips/${tripData.id}`
+    }
+
+    async function load() {
       const { data: { user } } = await supabase.auth.getUser()
       setUserId(user?.id ?? null)
 
@@ -61,33 +106,53 @@ export default function JoinTripPage() {
       setTrip(tripData as Trip)
       setMemberCount(Number((tripData as any).member_count) || 0)
 
+      // If they're already signed in, we don't make them click Join — we do
+      // the right thing automatically and send them to the trip page.
       if (user) {
-        // Trip creator: skip the invite page entirely, send them home.
-        if ((tripData as Trip).created_by === user.id) {
-          window.location.href = `/trips/${tripData.id}`
-          return
-        }
-
-        // Already a member? Mark so the button click just navigates rather than re-inserts.
-        const { data: existing } = await supabase
-          .from('trip_members')
-          .select('id')
-          .eq('trip_id', tripData.id)
-          .eq('profile_id', user.id)
-          .maybeSingle()
-        if (existing) setAlreadyMember(true)
+        await performAutoJoin(tripData as Trip, user.id)
+        return
       }
 
       setLoading(false)
     }
     load()
+
+    // If the session arrives after the initial mount (cookies from the
+    // /auth/callback redirect can take a beat to hydrate on the client),
+    // catch it so we still auto-join without any extra click.
+    const { data: sub } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const newUid = session?.user?.id ?? null
+      setUserId((prev) => (prev === newUid ? prev : newUid))
+
+      if (newUid && !autoJoinRanRef.current) {
+        // Trip data may have loaded already — grab the latest by reading state
+        // via a fresh RPC call so we don't depend on stale closures.
+        const { data: tripRows } = await supabase
+          .rpc('get_trip_by_invite', { _code: code })
+        const latestTrip =
+          Array.isArray(tripRows) && tripRows.length > 0
+            ? (tripRows[0] as Trip)
+            : null
+        if (latestTrip) await performAutoJoin(latestTrip, newUid)
+      }
+    })
+    return () => {
+      sub.subscription.unsubscribe()
+    }
   }, [code])
 
   const handleJoin = async () => {
     setError('')
     if (!trip) return
 
-    if (!userId) {
+    // Re-check auth at click time. If the user just confirmed their email,
+    // the initial getUser() may have race-conditioned with cookie hydration
+    // and left `userId` null in state even though the session is now valid.
+    const supabase = createClient()
+    const { data: { user: liveUser } } = await supabase.auth.getUser()
+    const activeUid = liveUser?.id ?? userId
+
+    if (!activeUid) {
       window.location.href = `/signup?redirect=/join/${code}`
       return
     }
@@ -98,10 +163,24 @@ export default function JoinTripPage() {
     }
 
     setJoining(true)
-    const supabase = createClient()
+
+    // Defensive: if the user is actually already a member but the initial
+    // check didn't find them (e.g. they were signed out during load), don't
+    // hard-fail on a unique constraint. Check once more before insert.
+    const { data: existingMember } = await supabase
+      .from('trip_members')
+      .select('id')
+      .eq('trip_id', trip.id)
+      .eq('profile_id', activeUid)
+      .maybeSingle()
+    if (existingMember) {
+      window.location.href = `/trips/${trip.id}`
+      return
+    }
+
     const { error: memberErr } = await supabase.from('trip_members').insert({
       trip_id: trip.id,
-      profile_id: userId,
+      profile_id: activeUid,
       role: 'member',
     })
 
@@ -329,44 +408,58 @@ export default function JoinTripPage() {
               </div>
             )}
 
-            {/* Amber Join button */}
-            <button
-              type="button"
-              onClick={handleJoin}
-              disabled={joining}
-              className="w-full py-4 rounded-xl text-base font-bold transition-all hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{
-                backgroundColor: '#f59e0b',
-                color: '#0f1f2e',
-                boxShadow: '0 4px 20px rgba(245,158,11,0.5)',
-              }}
-            >
-              {joining ? 'Joining...' : 'Join This Trip →'}
-            </button>
-            {!userId && !alreadyMember && (
-              <p
-                className="text-center text-xs mt-3"
-                style={{ color: 'rgba(255,255,255,0.55)' }}
+            {userId ? (
+              // Signed in but still on this page → auto-join is running or
+              // has failed. Keep a manual button as a safety net.
+              <button
+                type="button"
+                onClick={handleJoin}
+                disabled={joining}
+                className="w-full py-4 rounded-xl text-base font-bold transition-all hover:-translate-y-px disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  backgroundColor: '#f59e0b',
+                  color: '#0f1f2e',
+                  boxShadow: '0 4px 20px rgba(245,158,11,0.5)',
+                }}
               >
-                You&apos;ll create a free account first — takes 30 seconds.
-              </p>
+                {joining ? 'Joining...' : 'Join This Trip →'}
+              </button>
+            ) : (
+              // Not signed in → give them two clear paths: create account
+              // (primary for new users) or sign in (existing users).
+              <div className="space-y-3">
+                <a
+                  href={`/signup?redirect=/join/${code}`}
+                  className="block w-full text-center py-4 rounded-xl text-base font-bold transition-all hover:-translate-y-px no-underline"
+                  style={{
+                    backgroundColor: '#f59e0b',
+                    color: '#0f1f2e',
+                    boxShadow: '0 4px 20px rgba(245,158,11,0.5)',
+                  }}
+                >
+                  Create Free Account & Join →
+                </a>
+                <a
+                  href={`/signin?redirect=/join/${code}`}
+                  className="block w-full text-center py-3.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-px no-underline"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.08)',
+                    color: 'white',
+                    border: '1px solid rgba(255,255,255,0.25)',
+                  }}
+                >
+                  Already have an account? Sign in
+                </a>
+                <p
+                  className="text-center text-xs"
+                  style={{ color: 'rgba(255,255,255,0.55)' }}
+                >
+                  Takes 30 seconds. You&apos;ll land straight on the trip page.
+                </p>
+              </div>
             )}
           </div>
         </div>
-
-        {/* Not-logged-in helper below card */}
-        {!userId && (
-          <p className="text-center text-sm mt-6" style={{ color: '#5a7080' }}>
-            Already have an account?{' '}
-            <a
-              href={`/signin?redirect=/join/${code}`}
-              className="font-bold"
-              style={{ color: '#2D6A4F' }}
-            >
-              Sign in
-            </a>
-          </p>
-        )}
 
         {/* Trust tagline */}
         <p

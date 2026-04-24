@@ -14,6 +14,19 @@ interface Trip {
   end_date: string | null
   notes: string | null
   created_by: string | null
+  tournament_id: string | null
+  venue_id: string | null
+  tournaments: {
+    id: string
+    name: string | null
+    sport: string | null
+  } | null
+  venues: {
+    id: string
+    name: string | null
+    city: string | null
+    state: string | null
+  } | null
 }
 
 interface MemberRow {
@@ -75,11 +88,35 @@ export default function TripDetailPage() {
         return
       }
 
-      const { data: tripData, error: tripErr } = await supabase
-        .from('trips')
-        .select('*')
-        .eq('id', tripId)
-        .maybeSingle()
+      // Try the enriched query first (joins require FK columns + RLS on
+      // tournaments/venues to be public-readable, which they are).
+      let tripData: any = null
+      let tripErr: any = null
+      {
+        const enriched = await supabase
+          .from('trips')
+          .select(
+            `*,
+             tournaments:tournament_id (id, name, sport),
+             venues:venue_id (id, name, city, state)`
+          )
+          .eq('id', tripId)
+          .maybeSingle()
+        tripData = enriched.data
+        tripErr = enriched.error
+      }
+
+      // If the join fails for any reason (e.g. old schema without FK columns
+      // in preview deploys), fall back to a plain select so we don't hard-fail.
+      if (tripErr || !tripData) {
+        const fallback = await supabase
+          .from('trips')
+          .select('*')
+          .eq('id', tripId)
+          .maybeSingle()
+        tripData = fallback.data
+        tripErr = fallback.error
+      }
 
       if (tripErr || !tripData) {
         console.error('Trip not found:', tripErr)
@@ -159,9 +196,17 @@ export default function TripDetailPage() {
 
   if (!trip) return null
 
-  const sport = extractField(trip.notes, 'Sport')
-  const tournament = extractField(trip.notes, 'Tournament')
-  const location = extractField(trip.notes, 'Location')
+  // Prefer FK-joined data when present; fall back to notes regex for legacy
+  // trips created before the FK columns were populated.
+  const sport = trip.tournaments?.sport || extractField(trip.notes, 'Sport')
+  const tournament =
+    trip.tournaments?.name ||
+    trip.venues?.name ||
+    extractField(trip.notes, 'Tournament')
+  const location =
+    trip.venues?.city && trip.venues?.state
+      ? `${trip.venues.city}, ${trip.venues.state}`
+      : extractField(trip.notes, 'Location')
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
