@@ -1,10 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase'
-import { Copy, Check, Share2, MapPin, Calendar, Users, Home, Plus } from 'lucide-react'
+import { Copy, Check, Share2, MapPin, Calendar, Users, Home, Plus, LogOut, Trash2, UserMinus, AlertTriangle } from 'lucide-react'
 import Navbar from '@/components/Navbar'
+import { Skeleton, MemberCardSkeleton } from '@/components/Skeleton'
+import type { StayPin, VenuePin } from '@/components/TeamMap'
+
+// Leaflet touches `window`; only load it on the client.
+const TeamMap = dynamic(() => import('@/components/TeamMap'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="rounded-2xl animate-pulse"
+      style={{ backgroundColor: '#e8eef2', height: 420 }}
+    />
+  ),
+})
 
 interface Trip {
   id: string
@@ -26,6 +40,8 @@ interface Trip {
     name: string | null
     city: string | null
     state: string | null
+    latitude: number | null
+    longitude: number | null
   } | null
 }
 
@@ -46,6 +62,8 @@ interface StayRow {
   property_name: string | null
   address: string | null
   booking_status: string | null
+  latitude: number | null
+  longitude: number | null
   profiles: {
     full_name: string | null
     email: string | null
@@ -67,12 +85,20 @@ export default function TripDetailPage() {
 
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const [trip, setTrip] = useState<Trip | null>(null)
   const [members, setMembers] = useState<MemberRow[]>([])
   const [stays, setStays] = useState<StayRow[]>([])
   const [tab, setTab] = useState<Tab>('team')
   const [copied, setCopied] = useState(false)
   const [shareCopied, setShareCopied] = useState(false)
+  const [confirmAction, setConfirmAction] = useState<
+    | null
+    | { kind: 'leave' }
+    | { kind: 'delete-trip' }
+    | { kind: 'remove-member'; memberId: string; name: string }
+  >(null)
+  const [actionBusy, setActionBusy] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -81,6 +107,7 @@ export default function TripDetailPage() {
         window.location.href = '/signin'
         return
       }
+      setCurrentUserId(user.id)
       setCheckingAuth(false)
 
       if (!tripId) {
@@ -98,7 +125,7 @@ export default function TripDetailPage() {
           .select(
             `*,
              tournaments:tournament_id (id, name, sport),
-             venues:venue_id (id, name, city, state)`
+             venues:venue_id (id, name, city, state, latitude, longitude)`
           )
           .eq('id', tripId)
           .maybeSingle()
@@ -133,7 +160,7 @@ export default function TripDetailPage() {
 
       const { data: stayData } = await supabase
         .from('family_stays')
-        .select('id, profile_id, property_name, address, booking_status, profiles(full_name, email)')
+        .select('id, profile_id, property_name, address, booking_status, latitude, longitude, profiles(full_name, email)')
         .eq('trip_id', tripId)
       setStays((stayData as unknown as StayRow[]) || [])
 
@@ -180,21 +207,114 @@ export default function TripDetailPage() {
     } catch {}
   }
 
+  const handleLeaveTrip = async () => {
+    if (!trip || !currentUserId) return
+    setActionBusy(true)
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('trip_members')
+      .delete()
+      .eq('trip_id', trip.id)
+      .eq('profile_id', currentUserId)
+    setActionBusy(false)
+    if (error) {
+      alert(`Couldn't leave trip: ${error.message}`)
+      return
+    }
+    window.location.href = '/dashboard'
+  }
+
+  const handleDeleteTrip = async () => {
+    if (!trip) return
+    setActionBusy(true)
+    const supabase = createClient()
+    // Cascade: delete stays, members, then trip itself.
+    await supabase.from('family_stays').delete().eq('trip_id', trip.id)
+    await supabase.from('trip_members').delete().eq('trip_id', trip.id)
+    const { error } = await supabase.from('trips').delete().eq('id', trip.id)
+    setActionBusy(false)
+    if (error) {
+      alert(`Couldn't delete trip: ${error.message}`)
+      return
+    }
+    window.location.href = '/dashboard'
+  }
+
+  const handleRemoveMember = async (memberRowId: string) => {
+    setActionBusy(true)
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('trip_members')
+      .delete()
+      .eq('id', memberRowId)
+    setActionBusy(false)
+    if (error) {
+      alert(`Couldn't remove member: ${error.message}`)
+      return
+    }
+    setMembers((prev) => prev.filter((m) => m.id !== memberRowId))
+    setConfirmAction(null)
+  }
+
   if (checkingAuth || loading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: '#f5f8fa' }}>
+        <div
+          style={{
+            height: '4px',
+            background:
+              'linear-gradient(to right, #2D6A4F, #f59e0b, #2D6A4F)',
+          }}
+        />
         <Navbar />
-        <div className="flex items-center justify-center py-24">
+        {/* Header placeholder */}
+        <section
+          className="px-4 py-14 lg:py-20"
+          style={{ backgroundColor: '#0f1f2e' }}
+        >
+          <div className="max-w-5xl mx-auto space-y-5">
+            <Skeleton width={80} height={24} rounded={999} style={{ opacity: 0.35 }} />
+            <Skeleton width="60%" height={44} style={{ opacity: 0.25 }} />
+            <Skeleton width="40%" height={20} style={{ opacity: 0.2 }} />
+            <div
+              className="rounded-2xl p-6 mt-6"
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(245,158,11,0.3)',
+              }}
+            >
+              <Skeleton width={140} height={12} style={{ opacity: 0.3 }} />
+              <div className="mt-3">
+                <Skeleton width={220} height={40} style={{ opacity: 0.25 }} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Tabs + content placeholder */}
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div
-            className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: '#2D6A4F' }}
-          />
-        </div>
+            className="flex gap-4 mb-8 border-b pb-3"
+            style={{ borderColor: '#dde8ee' }}
+          >
+            <Skeleton width={80} height={16} />
+            <Skeleton width={80} height={16} />
+            <Skeleton width={60} height={16} />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <MemberCardSkeleton />
+            <MemberCardSkeleton />
+            <MemberCardSkeleton />
+            <MemberCardSkeleton />
+          </div>
+        </section>
       </div>
     )
   }
 
   if (!trip) return null
+
+  const isOwner = currentUserId !== null && trip.created_by === currentUserId
 
   // Prefer FK-joined data when present; fall back to notes regex for legacy
   // trips created before the FK columns were populated.
@@ -364,10 +484,174 @@ export default function TripDetailPage() {
           </TabButton>
         </div>
 
-        {tab === 'team' && <TeamTab members={members} />}
+        {tab === 'team' && (
+          <TeamTab
+            members={members}
+            isOwner={isOwner}
+            currentUserId={currentUserId}
+            tripCreatorId={trip.created_by}
+            onRemove={(m) =>
+              setConfirmAction({
+                kind: 'remove-member',
+                memberId: m.id,
+                name: m.profiles?.full_name || m.profiles?.email || 'this member',
+              })
+            }
+          />
+        )}
         {tab === 'stays' && <StaysTab stays={stays} tripId={trip.id} />}
-        {tab === 'map' && <MapPlaceholder />}
+        {tab === 'map' && (
+          <MapTab
+            stays={stays}
+            venue={
+              trip.venues?.latitude && trip.venues?.longitude
+                ? {
+                    id: trip.venues.id,
+                    lat: Number(trip.venues.latitude),
+                    lng: Number(trip.venues.longitude),
+                    name:
+                      trip.venues.name ||
+                      trip.tournaments?.name ||
+                      'Tournament Venue',
+                  }
+                : null
+            }
+          />
+        )}
+
+        {/* Danger zone: leave trip (members) or delete trip (owner) */}
+        <div
+          className="mt-12 rounded-2xl border p-6"
+          style={{
+            borderColor: '#fecaca',
+            backgroundColor: '#fff7f7',
+          }}
+        >
+          <div className="flex items-start gap-3 mb-4">
+            <AlertTriangle size={20} style={{ color: '#dc2626' }} />
+            <div>
+              <h3 className="text-base font-bold" style={{ color: '#0f1f2e' }}>
+                {isOwner ? 'Danger zone' : 'Leave this trip'}
+              </h3>
+              <p className="text-sm mt-1" style={{ color: '#5a7080' }}>
+                {isOwner
+                  ? "Deleting a trip is permanent and can't be undone. All families will lose access."
+                  : "You'll be removed from the team roster. The organizer can re-invite you with the code."}
+              </p>
+            </div>
+          </div>
+          {isOwner ? (
+            <button
+              type="button"
+              onClick={() => setConfirmAction({ kind: 'delete-trip' })}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90"
+              style={{
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                border: '1px solid #fecaca',
+              }}
+            >
+              <Trash2 size={14} />
+              Delete Trip
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setConfirmAction({ kind: 'leave' })}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90"
+              style={{
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                border: '1px solid #fecaca',
+              }}
+            >
+              <LogOut size={14} />
+              Leave Trip
+            </button>
+          )}
+        </div>
       </section>
+
+      {/* Confirmation modal */}
+      {confirmAction && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(15,31,46,0.6)' }}
+          onClick={() => !actionBusy && setConfirmAction(null)}
+        >
+          <div
+            className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start gap-3 mb-4">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: '#fee2e2' }}
+              >
+                <AlertTriangle size={20} style={{ color: '#dc2626' }} />
+              </div>
+              <div>
+                <h3
+                  className="text-lg font-bold"
+                  style={{ color: '#0f1f2e' }}
+                >
+                  {confirmAction.kind === 'delete-trip'
+                    ? `Delete "${trip.name}"?`
+                    : confirmAction.kind === 'leave'
+                    ? 'Leave this trip?'
+                    : `Remove ${confirmAction.name}?`}
+                </h3>
+                <p
+                  className="text-sm mt-1"
+                  style={{ color: '#5a7080' }}
+                >
+                  {confirmAction.kind === 'delete-trip'
+                    ? 'This cannot be undone. All families, stays, and chat history will be removed.'
+                    : confirmAction.kind === 'leave'
+                    ? "You'll lose access. The organizer can re-invite you anytime using the trip code."
+                    : 'They will lose access to the trip. They can rejoin later with the invite code.'}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 justify-end">
+              <button
+                type="button"
+                onClick={() => setConfirmAction(null)}
+                disabled={actionBusy}
+                className="px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors disabled:opacity-50"
+                style={{
+                  border: '1px solid #dde8ee',
+                  color: '#5a7080',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={actionBusy}
+                onClick={() => {
+                  if (confirmAction.kind === 'delete-trip') handleDeleteTrip()
+                  else if (confirmAction.kind === 'leave') handleLeaveTrip()
+                  else handleRemoveMember(confirmAction.memberId)
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition-all disabled:opacity-50"
+                style={{
+                  backgroundColor: '#dc2626',
+                  boxShadow: '0 4px 14px rgba(220,38,38,0.35)',
+                }}
+              >
+                {actionBusy
+                  ? 'Working…'
+                  : confirmAction.kind === 'delete-trip'
+                  ? 'Yes, delete trip'
+                  : confirmAction.kind === 'leave'
+                  ? 'Yes, leave'
+                  : 'Yes, remove'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -408,7 +692,19 @@ function getInitials(name: string | null | undefined, email: string | null | und
   return '?'
 }
 
-function TeamTab({ members }: { members: MemberRow[] }) {
+function TeamTab({
+  members,
+  isOwner,
+  currentUserId,
+  tripCreatorId,
+  onRemove,
+}: {
+  members: MemberRow[]
+  isOwner: boolean
+  currentUserId: string | null
+  tripCreatorId: string | null
+  onRemove: (m: MemberRow) => void
+}) {
   if (members.length === 0) {
     return (
       <EmptyState
@@ -423,7 +719,12 @@ function TeamTab({ members }: { members: MemberRow[] }) {
       {members.map((m) => {
         const name = m.profiles?.full_name || m.profiles?.email || 'Family'
         const initials = getInitials(m.profiles?.full_name, m.profiles?.email)
-        const isOrganizer = m.role === 'organizer'
+        const isTripCreator = m.profile_id === tripCreatorId
+        const isSelf = m.profile_id === currentUserId
+        // Treat the trip creator as the organizer regardless of the role
+        // column value on their membership row.
+        const isOrganizer = isTripCreator || m.role === 'organizer'
+        const canRemove = isOwner && !isSelf && !isTripCreator
         return (
           <div
             key={m.id}
@@ -441,20 +742,42 @@ function TeamTab({ members }: { members: MemberRow[] }) {
             <div className="flex-1 min-w-0">
               <p className="font-semibold truncate" style={{ color: '#0f1f2e' }}>
                 {name}
+                {isSelf && (
+                  <span
+                    className="ml-2 text-[10px] font-bold uppercase tracking-wide"
+                    style={{ color: '#8fa3b2' }}
+                  >
+                    (You)
+                  </span>
+                )}
               </p>
               <p className="text-xs" style={{ color: '#8fa3b2' }}>
                 Joined {formatDate(m.joined_at)}
               </p>
             </div>
-            <span
-              className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full flex-shrink-0"
-              style={{
-                backgroundColor: isOrganizer ? '#fef3c7' : '#e8f5ee',
-                color: isOrganizer ? '#92400e' : '#2D6A4F',
-              }}
-            >
-              {isOrganizer ? 'Organizer' : 'Member'}
-            </span>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span
+                className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                style={{
+                  backgroundColor: isOrganizer ? '#fef3c7' : '#e8f5ee',
+                  color: isOrganizer ? '#92400e' : '#2D6A4F',
+                }}
+              >
+                {isOrganizer ? 'Organizer' : 'Member'}
+              </span>
+              {canRemove && (
+                <button
+                  type="button"
+                  onClick={() => onRemove(m)}
+                  title="Remove from trip"
+                  aria-label={`Remove ${name}`}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors hover:bg-red-50"
+                  style={{ color: '#dc2626' }}
+                >
+                  <UserMinus size={14} />
+                </button>
+              )}
+            </div>
           </div>
         )
       })}
@@ -551,49 +874,99 @@ function StaysTab({ stays, tripId }: { stays: StayRow[]; tripId: string }) {
   )
 }
 
-function MapPlaceholder() {
-  return (
-    <div
-      className="relative overflow-hidden rounded-3xl p-12 lg:p-16 text-center"
-      style={{ backgroundColor: '#0f1f2e' }}
-    >
+function MapTab({
+  stays,
+  venue,
+}: {
+  stays: StayRow[]
+  venue: VenuePin | null
+}) {
+  // Only include stays that have geocoded coordinates.
+  const stayPins: StayPin[] = stays
+    .filter((s) => s.latitude != null && s.longitude != null)
+    .map((s) => ({
+      id: s.id,
+      lat: Number(s.latitude),
+      lng: Number(s.longitude),
+      familyName:
+        s.profiles?.full_name || s.profiles?.email || 'Family',
+      propertyName: s.property_name,
+      booked: s.booking_status === 'booked',
+    }))
+
+  const hasPins = !!venue || stayPins.length > 0
+
+  // Count of stays without coordinates — we'll nudge them to add location.
+  const ungeocodedCount = stays.length - stayPins.length
+
+  if (!hasPins) {
+    return (
       <div
-        className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-20"
-        style={{ background: 'radial-gradient(circle, #2D6A4F 0%, transparent 70%)' }}
-      />
-      <div
-        className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full opacity-10"
-        style={{ background: 'radial-gradient(circle, #f59e0b 0%, transparent 70%)' }}
-      />
-      <div className="relative z-10">
+        className="relative overflow-hidden rounded-3xl p-12 lg:p-16 text-center"
+        style={{ backgroundColor: '#0f1f2e' }}
+      >
         <div
-          className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          className="absolute -top-24 -left-24 w-72 h-72 rounded-full opacity-20"
           style={{
-            backgroundColor: 'rgba(245,158,11,0.15)',
-            border: '1px solid rgba(245,158,11,0.3)',
+            background:
+              'radial-gradient(circle, #2D6A4F 0%, transparent 70%)',
           }}
-        >
-          <MapPin size={36} color="#f59e0b" strokeWidth={2} />
+        />
+        <div
+          className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full opacity-10"
+          style={{
+            background:
+              'radial-gradient(circle, #f59e0b 0%, transparent 70%)',
+          }}
+        />
+        <div className="relative z-10">
+          <div
+            className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{
+              backgroundColor: 'rgba(245,158,11,0.15)',
+              border: '1px solid rgba(245,158,11,0.3)',
+            }}
+          >
+            <MapPin size={36} color="#f59e0b" strokeWidth={2} />
+          </div>
+          <h3 className="text-2xl lg:text-3xl font-extrabold mb-3 text-white">
+            Nothing to map yet
+          </h3>
+          <p
+            className="text-base max-w-md mx-auto leading-relaxed"
+            style={{ color: 'rgba(255,255,255,0.7)' }}
+          >
+            Once your tournament venue is set and families mark where they&apos;re
+            staying, pins will show up here.
+          </p>
         </div>
-        <span
-          className="inline-block text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-4"
-          style={{
-            backgroundColor: 'rgba(245,158,11,0.15)',
-            color: '#f59e0b',
-          }}
-        >
-          Coming Soon
-        </span>
-        <h3 className="text-2xl lg:text-3xl font-extrabold mb-3 text-white">
-          Team Map View
-        </h3>
-        <p
-          className="text-base max-w-md mx-auto leading-relaxed"
-          style={{ color: 'rgba(255,255,255,0.7)' }}
-        >
-          See every family&apos;s stay pinned on one map, so you can book close and keep the team together.
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div className="mb-5">
+        <h2 className="text-lg font-bold" style={{ color: '#0f1f2e' }}>
+          Where the team is staying
+        </h2>
+        <p className="text-sm mt-0.5" style={{ color: '#5a7080' }}>
+          Amber pin is the tournament venue. Green pins are family stays.
         </p>
       </div>
+
+      <TeamMap stays={stayPins} venue={venue} height={480} />
+
+      {ungeocodedCount > 0 && (
+        <p
+          className="text-xs mt-3 px-2"
+          style={{ color: '#8fa3b2' }}
+        >
+          {ungeocodedCount}{' '}
+          {ungeocodedCount === 1 ? 'stay has' : 'stays have'} no location set
+          and {ungeocodedCount === 1 ? "isn't" : "aren't"} on the map yet.
+        </p>
+      )}
     </div>
   )
 }

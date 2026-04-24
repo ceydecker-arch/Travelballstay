@@ -397,7 +397,7 @@ export default function TournamentsPage() {
                 key={r.id}
                 href={
                   r.source === 'tournament'
-                    ? `/create-trip?tournament=${r.id}`
+                    ? `/tournaments/${r.id}`
                     : `/create-trip?venue=${r.id}`
                 }
                 className="group block rounded-2xl overflow-hidden no-underline transition-all duration-300 hover:-translate-y-2"
