@@ -17,11 +17,16 @@ function SignInInner() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams?.get('redirect') || '/dashboard'
   const errorParam = searchParams?.get('error')
+  const prefillEmail = searchParams?.get('email') || ''
+  const noticeParam = searchParams?.get('notice') || ''
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(prefillEmail)
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState(noticeParam)
+  const [needsResend, setNeedsResend] = useState(false)
+  const [resending, setResending] = useState(false)
 
   useEffect(() => {
     if (errorParam) setError(errorParam)
@@ -31,6 +36,9 @@ function SignInInner() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setNeedsResend(false)
+    // Only clear the friendly notice once the user actually tries to sign in.
+    setNotice('')
 
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({
@@ -39,11 +47,45 @@ function SignInInner() {
     })
 
     if (error) {
-      setError(error.message)
+      // Special-case unconfirmed accounts so users aren't stuck with a cryptic
+      // error. Offer a one-click resend of the confirmation email.
+      if (/email.*not.*confirmed/i.test(error.message) || /confirm/i.test(error.message)) {
+        setNeedsResend(true)
+        setError(
+          "Your email isn't confirmed yet. Tap below to resend the confirmation link."
+        )
+      } else {
+        setError(error.message)
+      }
       setLoading(false)
     } else {
       window.location.href = redirectTo
     }
+  }
+
+  const handleResend = async () => {
+    if (!email) {
+      setError('Enter your email above first, then tap Resend.')
+      return
+    }
+    setResending(true)
+    setError('')
+    const supabase = createClient()
+    const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
+    const { error: resendErr } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: callbackUrl },
+    })
+    if (resendErr) {
+      setError(resendErr.message)
+    } else {
+      setNotice(
+        'Confirmation email sent. Click the link in your inbox to finish signing in.'
+      )
+      setNeedsResend(false)
+    }
+    setResending(false)
   }
 
   const focusStyles = {
@@ -188,6 +230,19 @@ function SignInInner() {
                 Sign in to manage your team trips.
               </p>
 
+              {notice && (
+                <div
+                  className="rounded-xl px-4 py-3 mb-4 text-sm"
+                  style={{
+                    backgroundColor: '#e8f5ee',
+                    color: '#1f4d38',
+                    border: '1px solid #a8d5be',
+                  }}
+                >
+                  {notice}
+                </div>
+              )}
+
               {error && (
                 <div
                   className="rounded-xl px-4 py-3 mb-4 text-sm"
@@ -198,6 +253,20 @@ function SignInInner() {
                   }}
                 >
                   {error}
+                  {needsResend && (
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={resending}
+                      className="mt-2 block w-full text-center py-2 rounded-lg text-xs font-bold transition-all disabled:opacity-50"
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                      }}
+                    >
+                      {resending ? 'Sending…' : 'Resend confirmation email'}
+                    </button>
+                  )}
                 </div>
               )}
 

@@ -31,7 +31,7 @@ function SignUpInner() {
 
     const supabase = createClient()
     const callbackUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -45,10 +45,29 @@ function SignUpInner() {
     if (error) {
       setError(error.message)
       setLoading(false)
-    } else {
-      setSuccess(true)
-      setLoading(false)
+      return
     }
+
+    // Supabase's anti-enumeration behavior: when an email is already
+    // registered AND confirmed, signUp returns success but the user has
+    // NO identities attached. In that case the person already has an
+    // account — don't send them through email verification again, just
+    // route them to /signin with the email prefilled and the same
+    // post-auth destination preserved.
+    const identities = data?.user?.identities ?? []
+    if (identities.length === 0) {
+      const qs = new URLSearchParams({
+        redirect: redirectTo,
+        email,
+        notice:
+          'This email is already registered. Sign in to continue — no new verification needed.',
+      })
+      window.location.href = `/signin?${qs.toString()}`
+      return
+    }
+
+    setSuccess(true)
+    setLoading(false)
   }
 
   const focusStyles = {
