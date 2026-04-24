@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Menu, X, MapPin } from 'lucide-react'
+import { Menu, X, MapPin, Shield } from 'lucide-react'
 import { createClient } from '@/lib/supabase'
 
 const navLinks = [
@@ -14,17 +14,31 @@ const navLinks = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
 
+    async function loadAdminFlag(userId: string) {
+      const { data } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', userId)
+        .maybeSingle()
+      setIsAdmin(!!data?.is_admin)
+    }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user)
+      if (user) loadAdminFlag(user.id)
+      else setIsAdmin(false)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null)
+        if (session?.user) loadAdminFlag(session.user.id)
+        else setIsAdmin(false)
       }
     )
 
@@ -95,6 +109,26 @@ export default function Navbar() {
                 >
                   My Trips
                 </a>
+                <a
+                  href="/profile"
+                  className="text-sm font-bold px-4 py-2 rounded-lg transition-all duration-150 hover:bg-gray-50 whitespace-nowrap"
+                  style={{ color: '#4a5e6d' }}
+                >
+                  Profile
+                </a>
+                {isAdmin && (
+                  <a
+                    href="/admin"
+                    className="inline-flex items-center gap-1.5 text-sm font-bold px-3 py-2 rounded-lg transition-all duration-150 whitespace-nowrap"
+                    style={{
+                      color: '#92400e',
+                      backgroundColor: '#fef3c7',
+                    }}
+                    title="Admin panel"
+                  >
+                    <Shield size={14} /> Admin
+                  </a>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="text-sm font-bold px-4 py-2 rounded-lg border border-gray-200 transition-all duration-150 hover:bg-gray-50 whitespace-nowrap"
@@ -157,6 +191,25 @@ export default function Navbar() {
                 >
                   My Trips
                 </a>
+                <a
+                  href="/profile"
+                  className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Profile
+                </a>
+                {isAdmin && (
+                  <a
+                    href="/admin"
+                    className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors inline-flex items-center justify-center gap-1.5"
+                    style={{
+                      color: '#92400e',
+                      backgroundColor: '#fef3c7',
+                      border: '1px solid #fcd34d',
+                    }}
+                  >
+                    <Shield size={14} /> Admin
+                  </a>
+                )}
                 <button
                   onClick={handleSignOut}
                   className="w-full text-center text-sm font-semibold px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
